@@ -1,130 +1,212 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./utils/SafeMath.sol";
-import "./extensions/ERC20.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract QChainLottery is Ownable {
-    using SafeMath for uint256;
+contract Lottery is
+    Initializable,
+    OwnableUpgradeable,
+    VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab)
+{
+    VRFCoordinatorV2Interface constant COORDINATOR =
+        VRFCoordinatorV2Interface(0x6168499c0cFfCaCD319c818142124B7A15E857ab);
+    bytes32 constant KEY_HASH =
+        0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
+    uint64 constant SUBSCRIPTION_ID = 247; // https://vrf.chain.link
+    uint32 constant CALLBACK_GAS_LIMIT = 1000000;
+    uint32 constant NUM_WORDS = 1;
+    uint16 constant REQUEST_CONFIRMATIONS = 3;
+    uint256[] randomWords;
+    uint256 requestId;
 
-    event WinnerEthTransfer(
-        address indexed winner,
-        uint256 value
-    );
+    uint256 public lotteryID;
+    address payable[] public participants;
+    uint256 public costPerTicket;
+    uint256 public prizePool;
+    uint256 public startingTimestamp;
+    uint256 private closingTimestamp;
+    address payable public winner;
+    uint256 public randomResult;
+    uint256 public lotteryDuration;
+    uint8 public winnerPercentage;
 
-    event OwnerEthTransfer(
-        address indexed owner,
-        uint256 value
-    );
+    enum Status {
+        NOT_STARTED, // The lottery is not started yet
+        OPEN, // The lottery is open for ticket purchases
+        CLOSED, // The lottery is no longer open for ticket purchases
+        COMPLETED // The lottery has been closed and the winner picked
+    }
+    Status public lotteryStatus = Status.NOT_STARTED;
 
-    string public title;
-    uint256 public price;
-    uint256 public endTime;
-    uint256 public winnersCount;
-    uint256 public gainProcent;
+    struct LotteryInfo {
+        uint256 lotteryID;
+        uint256 prizePool;
+        uint256 costPerTicket;
+        uint256 startingTimestamp;
+        uint256 closingTimestamp;
+        address winner;
+        uint256 randomNumber;
+    }
+    mapping(uint256 => LotteryInfo) public allLotteries;
 
-    uint256 public totalRaised;
-    uint256 public totalTickets;
+    event ClaimedReward(uint256 lotteryId);
+    event ClosedLottery(uint256 lotteryId);
+    event CompletedLottery(uint256 lotteryId);
+    event OpenedLottery(uint256 lotteryId);
+    event RequestedRandomWords(uint256 requestId);
 
-    address[] public lotteryTickets;
-    address[] public winners;
+    modifier canClose() {
+        require(
+            lotteryStatus == Status.OPEN,
+            "You can not close the unstarted lottery!"
+        );
+        require(
+            block.timestamp >= startingTimestamp + lotteryDuration,
+            "Time is not over!"
+        );
+        require(randomResult == 0, "Already closed!"); // to prevent re-closing
+        _;
+    }
 
-    uint256 private randNonce = 0;
-    bool private isEnded = false;
+    modifier ifNotStarted() {
+        require(lotteryStatus == Status.NOT_STARTED);
+        _;
+    }
 
-    constructor(
-        string _title, 
-        uint256 _price, 
-        uint256 _endTime, 
-        uint256 _winnersCount,
-        uint256 _gain
-    ) 
-        public
+    modifier ifOpen() {
+        require(
+            lotteryStatus == Status.OPEN,
+            "The lottery has not started yet!"
+        );
+        require(
+            block.timestamp <= startingTimestamp + lotteryDuration,
+            "Time is over!"
+        );
+        _;
+    }
+
+    modifier ifCompleted() {
+        require(
+            lotteryStatus == Status.COMPLETED,
+            "The lottery has not completed yet!"
+        );
+        _;
+    }
+
+    modifier onlyWinnerOrOwner() {
+        require(
+            msg.sender == winner || msg.sender == owner(),
+            "Only winner can claim reward!"
+        );
+        _;
+    }
+
+    modifier randomNumberGenerated() {
+        require(winner != address(0), "The winner has not been selected!");
+        _;
+    }
+
+    // constructor
+    function initialize() external initializer {
+        __Ownable_init();
+    }
+
+    function startLottery(
+        uint256 _ticketPrice,
+        uint8 _winnerPercentage,
+        uint256 _lotteryDuration
+    ) external ifNotStarted onlyOwner {
+        costPerTicket = _ticketPrice;
+        winnerPercentage = _winnerPercentage;
+        lotteryDuration = _lotteryDuration;
+        lotteryStatus = Status.OPEN;
+        startingTimestamp = block.timestamp;
+        emit OpenedLottery(lotteryID);
+    }
+
+    function buyTicket() external payable ifOpen {
+        require(msg.value >= costPerTicket, "Please enter a valid value!");
+        prizePool += costPerTicket;
+        participants.push(payable(msg.sender));
+    }
+
+    function closeLottery() external canClose onlyOwner {
+        _requestRandomWords();
+        lotteryStatus = Status.CLOSED;
+        closingTimestamp = block.timestamp;
+        emit RequestedRandomWords(requestId);
+        emit ClosedLottery(lotteryID);
+    }
+
+    function claimReward()
+        external
+        ifCompleted
+        randomNumberGenerated
+        onlyWinnerOrOwner
     {
-        require(_endTime > now, "Incorrect period of lottery");
-        require(_winnersCount >= 1 && _winnersCount <= 10, "Incorrect number of winners: required from 1 to 10");
-        require(_gain <= 50, "Incorrect gain: required from 0 to 50");
-
-        title = _title;
-        price = _price;
-        endTime = _endTime;
-        winnersCount = _winnersCount;
-        gainProcent = _gain;
+        _addLottery();
+        uint256 winnerPrize = prizePool * (winnerPercentage / 100);
+        _transferPrize(winnerPrize);
+        _reset();
+        emit ClaimedReward(lotteryID);
     }
 
-    // if the transaction can take part in lottery
-    modifier canPlaceBet() {
-        require(now <= endTime);
-        _;
+    function withdrawEth() external onlyOwner {
+        require(prizePool == 0, "prizePool is not empty!");
+        payable(msg.sender).transfer(address(this).balance);
     }
 
-    // if lottery bet period has ended
-    modifier canWithdrawal() {
-        require(!lotteryIsEnded() && betPeriodIsEnded());
-        _;
+    function fulfillRandomWords(uint256, uint256[] memory _randomWords)
+        internal
+        override
+    {
+        randomWords = _randomWords;
+        randomResult = randomWords[0];
+        winner = participants[randomResult % participants.length];
+        lotteryStatus = Status.COMPLETED;
+        emit CompletedLottery(lotteryID);
     }
 
-    // if lottery has ended
-    modifier isFinished() {
-        require(lotteryIsEnded());
-        _;
+    function _requestRandomWords() private onlyOwner {
+        requestId = COORDINATOR.requestRandomWords(
+            KEY_HASH,
+            SUBSCRIPTION_ID,
+            REQUEST_CONFIRMATIONS,
+            CALLBACK_GAS_LIMIT,
+            NUM_WORDS
+        );
     }
 
-    // @return true if Lottery Bet Period has ended
-    function betPeriodIsEnded() public view returns (bool) {
-        return now > endTime;
+    function _transferPrize(uint256 _winnerPrize) private {
+        prizePool -= _winnerPrize;
+        winner.transfer(_winnerPrize); // transfer the winnerPrize to the winner
+        payable(owner()).transfer(prizePool); // transfer the rest of the prizePool to the owner
     }
 
-    // @return true if Lottery has ended
-    function lotteryIsEnded() public view returns (bool) {
-        return isEnded;
+    function _addLottery() private {
+        allLotteries[lotteryID++] = LotteryInfo(
+            lotteryID,
+            prizePool,
+            costPerTicket,
+            startingTimestamp,
+            closingTimestamp,
+            winner,
+            randomResult
+        );
     }
 
-    // place a bet
-    function placeBet() canPlaceBet payable external {
-        uint256 valueForReturn = msg.value.sub(price);
-        require(valueForReturn >= 0, "not enough ethers");
-
-        lotteryTickets.push(msg.sender);
-        totalTickets = totalTickets.add(1);
-        totalRaised = totalRaised.add(price);
-
-        // return extra eth
-        msg.sender.transfer(valueForReturn);
+    function _reset() private {
+        closingTimestamp = 0;
+        costPerTicket = 0;
+        lotteryDuration = 0;
+        lotteryStatus = Status.NOT_STARTED;
+        participants = new address payable[](0);
+        prizePool = 0;
+        randomResult = 0;
+        startingTimestamp = 0;
+        winner = payable(address(0));
     }
-
-    // finish lottery and withdrawal eth to owner and winner
-    function finishLottery() canWithdrawal external returns(bool) {
-
-        uint256 prizeValue = address(this).balance
-            .mul(100 - gainProcent)
-            .div(100)
-            .div(winnersCount);
-
-        // transfer prizes to winners
-        for (uint64 i = 0; i < winnersCount; i++) {
-            address winner = lotteryTickets[randMod(winnersCount)];
-            winners.push(winner);
-            winner.transfer(prizeValue);
-            emit WinnerEthTransfer(winner, prizeValue);
-        }
-
-        // transfer gain to owner
-        uint256 valueForOwner = address(this).balance;
-        owner.transfer(valueForOwner);
-        emit OwnerEthTransfer(owner, valueForOwner);
-
-        // change state and return
-        return isEnded = true;
-    }
-
-    function getWinners() isFinished external view returns(address[]) {
-        return winners;
-    }
-
-    function randMod(uint _mod) internal returns(uint256) {
-        randNonce++;
-        return uint(keccak256(now, msg.sender, randNonce)) % _mod;
-    }
-
 }

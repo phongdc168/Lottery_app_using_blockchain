@@ -1,0 +1,71 @@
+{
+	"id": "fc18698d64141fd9365d3db471d0dd67",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.0",
+	"solcLongVersion": "0.8.0+commit.c7dfd78e",
+	"input": {
+		"language": "Solidity",
+		"sources": {
+			"contracts/extensions/ERC20.sol": {
+				"content": "// // SPDX-License-Identifier: MIT\n// pragma solidity ^0.8.0;\n\n// import './IERC20.sol';\n// import \"./utils/SafeMath.sol\";\n\n// contract ERC20 is IERC20 {\n//   using SafeMath for uint256;\n\n//   uint256 public totalSupply;\n//   mapping(address => uint256) public balanceOf;\n//   mapping(address => mapping(address => uint256)) public allowance;\n\n//   function approve(address _spender, uint256 _value) public returns (bool _success) {\n//     allowance[msg.sender][_spender] = _value;\n//     emit Approval(msg.sender, _spender, _value);\n//     return true;\n//   }\n\n//   function transfer(address _to, uint256 _value) public returns (bool _success) {\n//     require(_to != address(0));\n//     balanceOf[msg.sender] = balanceOf[msg.sender].sub(_value);\n//     balanceOf[_to] = balanceOf[_to].add(_value);\n//     emit Transfer(msg.sender, _to, _value);\n//     return true;\n//   }\n\n//   function transferFrom(\n//     address _from,\n//     address _to,\n//     uint256 _value\n//   ) public returns (bool _success) {\n//     require(_to != address(0));\n//     balanceOf[_from] = balanceOf[_from].sub(_value);\n//     balanceOf[_to] = balanceOf[_to].add(_value);\n//     allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);\n//     emit Transfer(_from, _to, _value);\n//     return true;\n//   }\n// }"
+			}
+		},
+		"settings": {
+			"optimizer": {
+				"enabled": false,
+				"runs": 200
+			},
+			"outputSelection": {
+				"*": {
+					"": [
+						"ast"
+					],
+					"*": [
+						"abi",
+						"metadata",
+						"devdoc",
+						"userdoc",
+						"storageLayout",
+						"evm.legacyAssembly",
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"evm.methodIdentifiers",
+						"evm.gasEstimates",
+						"evm.assembly"
+					]
+				}
+			}
+		}
+	},
+	"output": {
+		"errors": [
+			{
+				"component": "general",
+				"errorCode": "3420",
+				"formattedMessage": "Warning: Source file does not specify required compiler version! Consider adding \"pragma solidity ^0.8.0;\"\n--> contracts/extensions/ERC20.sol\n\n",
+				"message": "Source file does not specify required compiler version! Consider adding \"pragma solidity ^0.8.0;\"",
+				"severity": "warning",
+				"sourceLocation": {
+					"end": -1,
+					"file": "contracts/extensions/ERC20.sol",
+					"start": -1
+				},
+				"type": "Warning"
+			}
+		],
+		"sources": {
+			"contracts/extensions/ERC20.sol": {
+				"ast": {
+					"absolutePath": "contracts/extensions/ERC20.sol",
+					"exportedSymbols": {},
+					"id": 1,
+					"license": "MIT",
+					"nodeType": "SourceUnit",
+					"nodes": [],
+					"src": "1303:0:0"
+				},
+				"id": 0
+			}
+		}
+	}
+}
