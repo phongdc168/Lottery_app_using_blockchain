@@ -1,38 +1,92 @@
-.App {
-  text-align: center;
+body{
+  margin:0;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+.main{
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  width: 100%;
+}
+.layout-header{
+  position: fixed;
+  top: 0px;
+  z-index: 999;
+  background-color: rgb(48, 43, 43);
+  width: 100%;
+  height: 68px;
+  box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
+  display: flex;
+}
+.navbar-brand{
+  width: 65%;
+  font-weight: 1000;
+}
+.connect-wallet{
+  background-color: yellow;
+  font-weight: 800;
+  height: 50px;
+  width: auto;
+  font-size: calc(5px + 2vmin);
+  border-radius: 5px;
+  border: 1px solid black;
+  margin-right: 0;
+  cursor: pointer;
+  text-overflow: ellipsis; overflow: hidden; -webkit-line-clamp: 3; -webkit-box-orient: vertical; display: -webkit-box;
 }
 
-.App-link {
-  color: #61dafb;
+.layout-body{
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  margin-top: 68px;
+}
+.lottery-area{
+  /* background-color: #4c5058; */
+  width: 60%;
+  height:auto;
+}
+.run-lottery{
+  height: 50%;
+  background-color: rgb(48, 43, 43);
+  border: 1px solid white;
+  width: 100%;
+  color: rgb(247, 243, 243);
+}
+.pay-money{
+  height: 50%;
+}
+.pot{
+  height: 50%;
+  color: #fff;
+
+}
+.play-game{
+  background-color: yellow;
+  font-weight: 800;
+  height: 50px;
+  width: 200px;
+  font-size: calc(5px + 2vmin);
+  border-radius: 5px;
+  border: 1px solid black;
+  margin-right: 0;
+  cursor: pointer;
+}
+.result-lottery{
+  height: 50%;
+  width: 100%;
+  background-color: rgb(118, 163, 14);
+  background-color: rgb(48, 43, 43);
+  border-right: 1px solid white;
+  color:turquoise;
+}
+.participants{
+  height: auto;
+  width: 40%;
+  background-color: brown;
+  background-color: rgb(48, 43, 43);
+  border: 1px solid white;
+  color: yellow;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+
+
