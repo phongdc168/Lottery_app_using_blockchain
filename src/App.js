@@ -1,92 +1,140 @@
 import './App.css'
-import { useState } from 'react'
-// import Web3 from "web3/dist/web3.min.js"
-import { ethers } from "ethers";
+import { useEffect, useState } from 'react'
+import { ethers } from 'ethers'
+import lotteryAbi from "./lottery.abi.json"
 
 function App() {
-  const [errorMessage, setErrorMessage] = useState(null);
-	const [defaultAccount, setDefaultAccount] = useState('Connect Wallet');
-	const [userBalance, setUserBalance] = useState(null);
+
+  /* Declare variables using State */
+  //==============================================================================
+
+
+  const [errorMessage, setErrorMessage] = useState();
+  const [defaultAccount, setDefaultAccount] = useState('Connect Wallet');
+  const [contract, setContract] = useState();
+  const [provider, setProvider] = useState();
+  const [signer, setSigner] = useState();
+
+
+  /* Update State */
+  //==============================================================================
+
+  /* Load contract */
+  //==============================================================================
+
+  /* Declare variable connect to contract */
+  //==============================================================================
+
+  const declareContract = async () =>{
+  let lotteryAddress = "0xade69a05918dD249469EeA5B8E549af60AceC6BD";
+
+  const lotteryContract = new ethers.Contract(lotteryAddress, lotteryAbi, provider);
+  let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
+  setProvider(tmpProvider);
+  let tmpSigner = tmpProvider.getSigner();
+  setSigner(tmpSigner);
+  let tmpContract = new ethers.Contract(lotteryAddress, lotteryAbi, tmpSigner);
+  setContract(tmpContract);
+
+  }
+  /* Connect Wallet */
+  //==============================================================================
+
+
   const connectWalletHandler = () => {
-		if (window.ethereum && window.ethereum.isMetaMask) {
-			console.log('MetaMask Here!');
+    declareContract();
+    if (window.ethereum && window.ethereum.isMetaMask) {
+      console.log('MetaMask Here!');
 
-			window.ethereum.request({ method: 'eth_requestAccounts'})
-			.then(result => {
-				accountChangedHandler(result[0]);
-				getAccountBalance(result[0]);
-			})
-			.catch(error => {
-				setErrorMessage(error.message);
-			
-			});
+      window.ethereum.request({ method: 'eth_requestAccounts' })
+        .then(result => {
+          accountChangedHandler(result[0]);
+        })
+        .catch(error => {
+          setErrorMessage(error.message);
 
-		} else {
-			console.log('Need to install MetaMask');
-			setErrorMessage('Please install MetaMask browser extension to interact');
-		}
-	}
-// update account, will cause component re-render
-const accountChangedHandler = (newAccount) => {
-  setDefaultAccount(newAccount);
-  getAccountBalance(newAccount.toString());
-}
+        });
 
-const getAccountBalance = (account) => {
-  window.ethereum.request({method: 'eth_getBalance', params: [account, 'latest']})
-  .then(balance => {
-    setUserBalance(ethers.utils.formatEther(balance));
-  })
-  .catch(error => {
-    setErrorMessage(error.message);
-  });
-};
+    } else {
+      console.log('Need to install MetaMask');
+      setErrorMessage('Please install MetaMask browser extension to interact');
+    }
+  }
+  // update account, will cause component re-render
+  const accountChangedHandler = (newAccount) => {
+    setDefaultAccount(newAccount);
+  }
+  const chainChangedHandler = () => {
+    // reload the page to avoid any errors with chain change mid use of application
+    window.location.reload();
+  }
+  // listen for account changes
+  window.ethereum.on('accountsChanged', accountChangedHandler);
 
-const chainChangedHandler = () => {
-  // reload the page to avoid any errors with chain change mid use of application
-  window.location.reload();
-}
+  window.ethereum.on('chainChanged', chainChangedHandler);
+
+  /* Load Lottery */
+  //==============================================================================
+  // const runLottery = () =>{
+  //   lotteryContract.startLottery(1, 10, 600);
+  // }
 
 
-// listen for account changes
-window.ethereum.on('accountsChanged', accountChangedHandler);
+  /* Get player */
+  //==============================================================================
 
-window.ethereum.on('chainChanged', chainChangedHandler);
+
+  const getPlayers = async () => {
+    // event.preventDefault();
+    await (await contract.enter({value:10})).wait();
+    console.log(contract.getPlayers());
+    // let player = await contract.enter({value:10});
+  }
+
+
+  //==============================================================================
+
+
+    // useEffect(() => {
+    //   declareContract()
+    // }, [])
 
   return (
-       <div className="main">
-        <div className="layout-header">
+    <div className="main">
+      <div className="layout-header">
         <div className="navbar-brand">
-        LOTTERY APP
+          LOTTERY APP
     </div>
-      <div className="navbar-end">
+        <div className="navbar-end">
           <button onClick={connectWalletHandler} className="connect-wallet">
-            {}
-          {defaultAccount}
+            {defaultAccount}
           </button>
-          </div>
         </div>
-        <div className="layout-body">
-          <div className="lottery-area">
-            <div className="run-lottery">
-              <div className="pay-money">
-              Nạp 0.01 ETH để tham gia 
-              <button className="play-game">
-            NẠP
+      </div>
+      <div className="layout-body">
+        <div className="lottery-area">
+          <div className="run-lottery">
+            <div>
+              Giá vé số: 0.01 ETH
+        <div className="pay-money">
+                <input type="text" placeholder="Chọn số từ 1->100" id="getNumber" className="get-number" />
+                <button  onClick={getPlayers}className="play-game">
+                  Mua vé
           </button>
-          </div>
-          <div className="pot">
-            Tổng giải thưởng: 
-          </div>
+              </div>
             </div>
-            <div className="result-lottery">
-              Kết quả đợt trước:
+            <div className="pot">
+              Tổng giải thưởng:
+          </div>
+          </div>
+          <div className="result-lottery">
+            Kết quả đợt trước:
             </div>
-          </div>
-          <div className="participants">
-            Người tham gia:
-          </div>
         </div>
+        <div className="participants">
+          Người tham gia:
+          </div>
+      </div>
     </div>
   );
 }

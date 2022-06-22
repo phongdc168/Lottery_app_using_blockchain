@@ -55,6 +55,15 @@ body{
 .pay-money{
   height: 50%;
 }
+.get-number{
+  font-weight: 800;
+  height: 50px;
+  width: auto;
+  font-size: calc(5px + 2vmin);
+  border-radius: 5px;
+  border: 1px solid black;
+  margin-right: 0;
+}
 .pot{
   height: 50%;
   color: #fff;
