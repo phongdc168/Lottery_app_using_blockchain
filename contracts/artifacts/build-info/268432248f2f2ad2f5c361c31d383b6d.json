@@ -1,0 +1,71 @@
+{
+	"id": "268432248f2f2ad2f5c361c31d383b6d",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.15",
+	"solcLongVersion": "0.8.15+commit.e14f2714",
+	"input": {
+		"language": "Solidity",
+		"sources": {
+			"contracts/Lottery_backup.sol": {
+				"content": "// SPDX-License-Identifier: MIT\n// pragma solidity ^0.8.0;\n\n// import \"@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol\";\n// import \"@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol\";\n// import \"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\";\n// import \"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol\";\n\n// contract Lottery is\n//     Initializable,\n//     OwnableUpgradeable,\n//     VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab)\n// {\n//     VRFCoordinatorV2Interface constant COORDINATOR =\n//         VRFCoordinatorV2Interface(0x6168499c0cFfCaCD319c818142124B7A15E857ab);\n//     bytes32 constant KEY_HASH =\n//         0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;\n//     uint64 constant SUBSCRIPTION_ID = 247; // https://vrf.chain.link\n//     uint32 constant CALLBACK_GAS_LIMIT = 1000000;\n//     uint32 constant NUM_WORDS = 1;\n//     uint16 constant REQUEST_CONFIRMATIONS = 3;\n//     uint256[] randomWords;\n//     uint256 requestId;\n\n//     uint256 public lotteryID;\n//     address payable[] public participants;\n//     uint256 public costPerTicket = 1;\n//     uint256 public prizePool;\n//     uint256 public startingTimestamp;\n//     uint256 private closingTimestamp;\n//     address payable public winner;\n//     uint256 public randomResult;\n//     uint256 public lotteryDuration = 600;\n//     uint8 public winnerPercentage = 10;\n\n//     /* Suppose */\n//     // mapping(address => uint256) player;\n    \n\n//     enum Status {\n//         NOT_STARTED, // The lottery is not started yet\n//         OPEN, // The lottery is open for ticket purchases\n//         CLOSED, // The lottery is no longer open for ticket purchases\n//         COMPLETED // The lottery has been closed and the winner picked\n//     }\n//     Status public lotteryStatus = Status.NOT_STARTED;\n\n//     struct LotteryInfo {\n//         uint256 lotteryID;\n//         uint256 prizePool;\n//         uint256 costPerTicket;\n//         uint256 startingTimestamp;\n//         uint256 closingTimestamp;\n//         address winner;\n//         uint256 randomNumber;\n//     }\n//     mapping(uint256 => LotteryInfo) public allLotteries;\n\n//     event ClaimedReward(uint256 lotteryId);\n//     event ClosedLottery(uint256 lotteryId);\n//     event CompletedLottery(uint256 lotteryId);\n//     event OpenedLottery(uint256 lotteryId);\n//     event RequestedRandomWords(uint256 requestId);\n\n//     modifier canClose() {\n//         require(\n//             lotteryStatus == Status.OPEN,\n//             \"You can not close the unstarted lottery!\"\n//         );\n//         require(\n//             block.timestamp >= startingTimestamp + lotteryDuration,\n//             \"Time is not over!\"\n//         );\n//         require(randomResult == 0, \"Already closed!\"); // to prevent re-closing\n//         _;\n//     }\n\n//     modifier ifNotStarted() {\n//         require(lotteryStatus == Status.NOT_STARTED);\n//         _;\n//     }\n\n//     modifier ifOpen() {\n//         require(\n//             lotteryStatus == Status.OPEN,\n//             \"The lottery has not started yet!\"\n//         );\n//         require(\n//             block.timestamp <= startingTimestamp + lotteryDuration,\n//             \"Time is over!\"\n//         );\n//         _;\n//     }\n\n//     modifier ifCompleted() {\n//         require(\n//             lotteryStatus == Status.COMPLETED,\n//             \"The lottery has not completed yet!\"\n//         );\n//         _;\n//     }\n\n//     modifier onlyWinnerOrOwner() {\n//         require(\n//             msg.sender == winner || msg.sender == owner(),\n//             \"Only winner can claim reward!\"\n//         );\n//         _;\n//     }\n\n//     modifier randomNumberGenerated() {\n//         require(winner != address(0), \"The winner has not been selected!\");\n//         _;\n//     }\n\n//     // constructor\n//     function initialize() external initializer {\n//         __Ownable_init();\n//     }\n\n//     function startLottery(\n//         uint256 _ticketPrice,\n//         uint8 _winnerPercentage,\n//         uint256 _lotteryDuration\n//     ) external ifNotStarted onlyOwner {\n//         costPerTicket = _ticketPrice;\n//         winnerPercentage = _winnerPercentage;\n//         lotteryDuration = _lotteryDuration;\n//         lotteryStatus = Status.OPEN;\n//         startingTimestamp = block.timestamp;\n//         emit OpenedLottery(lotteryID);\n//     }\n\n//     function buyTicket() external payable ifOpen {\n//         require(msg.value >= costPerTicket, \"Please enter a valid value!\");\n//         prizePool += costPerTicket;\n//         participants.push(payable(msg.sender));\n//     }\n\n//     function closeLottery() external canClose onlyOwner {\n//         _requestRandomWords();\n//         lotteryStatus = Status.CLOSED;\n//         closingTimestamp = block.timestamp;\n//         emit RequestedRandomWords(requestId);\n//         emit ClosedLottery(lotteryID);\n//     }\n\n//     function claimReward()\n//         external\n//         ifCompleted\n//         randomNumberGenerated\n//         onlyWinnerOrOwner\n//     {\n//         _addLottery();\n//         uint256 winnerPrize = prizePool * (winnerPercentage / 100);\n//         _transferPrize(winnerPrize);\n//         _reset();\n//         emit ClaimedReward(lotteryID);\n//     }\n\n//     function withdrawEth() external onlyOwner {\n//         require(prizePool == 0, \"prizePool is not empty!\");\n//         payable(msg.sender).transfer(address(this).balance);\n//     }\n\n//     function fulfillRandomWords(uint256, uint256[] memory _randomWords)\n//         internal\n//         override\n//     {\n//         randomWords = _randomWords;\n//         randomResult = randomWords[0];\n//         winner = participants[randomResult % participants.length];\n//         lotteryStatus = Status.COMPLETED;\n//         emit CompletedLottery(lotteryID);\n//     }\n\n//     function _requestRandomWords() private onlyOwner {\n//         requestId = COORDINATOR.requestRandomWords(\n//             KEY_HASH,\n//             SUBSCRIPTION_ID,\n//             REQUEST_CONFIRMATIONS,\n//             CALLBACK_GAS_LIMIT,\n//             NUM_WORDS\n//         );\n//     }\n\n//     function _transferPrize(uint256 _winnerPrize) private {\n//         prizePool -= _winnerPrize;\n//         winner.transfer(_winnerPrize); // transfer the winnerPrize to the winner\n//         payable(owner()).transfer(prizePool); // transfer the rest of the prizePool to the owner\n//     }\n\n//     function _addLottery() private {\n//         allLotteries[lotteryID++] = LotteryInfo(\n//             lotteryID,\n//             prizePool,\n//             costPerTicket,\n//             startingTimestamp,\n//             closingTimestamp,\n//             winner,\n//             randomResult\n//         );\n//     }\n\n//     function _reset() private {\n//         closingTimestamp = 0;\n//         costPerTicket = 0;\n//         lotteryDuration = 0;\n//         lotteryStatus = Status.NOT_STARTED;\n//         participants = new address payable[](0);\n//         prizePool = 0;\n//         randomResult = 0;\n//         startingTimestamp = 0;\n//         winner = payable(address(0));\n//     }\n// }"
+			}
+		},
+		"settings": {
+			"optimizer": {
+				"enabled": false,
+				"runs": 200
+			},
+			"outputSelection": {
+				"*": {
+					"": [
+						"ast"
+					],
+					"*": [
+						"abi",
+						"metadata",
+						"devdoc",
+						"userdoc",
+						"storageLayout",
+						"evm.legacyAssembly",
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"evm.methodIdentifiers",
+						"evm.gasEstimates",
+						"evm.assembly"
+					]
+				}
+			}
+		}
+	},
+	"output": {
+		"errors": [
+			{
+				"component": "general",
+				"errorCode": "3420",
+				"formattedMessage": "Warning: Source file does not specify required compiler version! Consider adding \"pragma solidity ^0.8.15;\"\n--> contracts/Lottery_backup.sol\n\n",
+				"message": "Source file does not specify required compiler version! Consider adding \"pragma solidity ^0.8.15;\"",
+				"severity": "warning",
+				"sourceLocation": {
+					"end": -1,
+					"file": "contracts/Lottery_backup.sol",
+					"start": -1
+				},
+				"type": "Warning"
+			}
+		],
+		"sources": {
+			"contracts/Lottery_backup.sol": {
+				"ast": {
+					"absolutePath": "contracts/Lottery_backup.sol",
+					"exportedSymbols": {},
+					"id": 1,
+					"license": "MIT",
+					"nodeType": "SourceUnit",
+					"nodes": [],
+					"src": "7097:0:0"
+				},
+				"id": 0
+			}
+		}
+	}
+}
