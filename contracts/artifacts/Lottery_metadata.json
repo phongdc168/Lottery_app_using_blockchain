@@ -19,6 +19,30 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getAmountTicket",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "getBalance",
 				"outputs": [
@@ -174,11 +198,11 @@
 	},
 	"sources": {
 		"contracts/Lottery.sol": {
-			"keccak256": "0x27e48a4e783d92987c7a80ae8d53dbe33f1f72d33b0f800bf5cb2bb50c959e63",
+			"keccak256": "0xfe68a42677327ce5fb28b019377e53315af337ae4ea6f77e775d1c54c2b080fd",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4b9030ca9bcb39087195366ab33e6c2dbc978c381e055c32a4457dbd820a766a",
-				"dweb:/ipfs/QmYE6rKhtwJWSv1A7fAY7GVSPwdBDwkgDjgJYAyJvUJueM"
+				"bzz-raw://aa7f38d413aee9cba249c7e933be5931b51b8c1ee1f9683e6caa80b0315d7c92",
+				"dweb:/ipfs/QmTnN3Dzrq6Yt5zvmKM6c3hfSLWsyaMYkPYBVBcUkA2VVH"
 			]
 		}
 	},
