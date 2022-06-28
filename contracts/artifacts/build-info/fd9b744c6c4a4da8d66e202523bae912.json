@@ -1,0 +1,71 @@
+{
+	"id": "fd9b744c6c4a4da8d66e202523bae912",
+	"_format": "hh-sol-build-info-1",
+	"solcVersion": "0.8.15",
+	"solcLongVersion": "0.8.15+commit.e14f2714",
+	"input": {
+		"language": "Solidity",
+		"sources": {
+			"contracts/Lottery.sol": {
+				"content": "\n\n// // SPDX-License-Identifier: MIT\n\n// pragma solidity ^0.8.11;\n\n// import \"@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol\";\n// import \"@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol\";\n// // import \"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\";\n// // import \"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol\";\n\n// contract Lottery is VRFConsumerBaseV2 {\n//     VRFCoordinatorV2Interface COORDINATOR;\n\n//     // Your subscription ID.\n//      uint64 s_subscriptionId;\n\n//     // Rinkeby coordinator\n//     address vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab;\n\n//     // The gas lane to use, which specifies the maximum gas price to bump to.\n//     bytes32 keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;\n    \n//     uint32 callbackGasLimit = 100000;\n\n//     // The default is 3, but you can set this higher.\n//     uint16 requestConfirmations = 3;\n\n//     // For this example, retrieve 2 random values in one request.\n//     // Cannot exceed VRFCoordinatorV2.MAX_NUM_WORDS.\n//     uint32 numWords =  2;\n\n//     uint256[] public s_randomWords;\n//     uint256 public s_requestId;\n//     address s_owner;\n    \n//     // uint public lotteryId;\n//     // mapping (uint => address payable) public lotteryHistory;\n\n//     // struct ListNumberTicket{\n//     //     address payable [] groupPlayer;\n//     // }\n//     // mapping (uint => ListNumberTicket) internal groupTicket;\n\n//     // struct Participants {\n//     //     address payable player;\n//     //     uint numTicket;\n//     // }\n//     // mapping(uint => Participants) internal allLottery;  \n\n//     // uint internal playerCount = 0;\n\n//     // function getWinnerByLottery(uint lottery) public view returns (address payable) {\n//     //     return lotteryHistory[lottery];\n//     // }\n\n//     // function getBalance() public view returns (uint) {\n//     //     return address(this).balance;\n//     // }\n\n//     // function getPlayers(uint _index) public view returns (address payable, uint) {\n//     //     Participants storage participant = allLottery[_index];\n//     //     return(\n//     //         participant.player,\n//     //         participant.numTicket\n//     //     );\n//     // }\n    \n//     // function getAmountPlayer() public view returns (uint){\n//     //     return playerCount;\n//     // }\n//     // function enter(uint _numTicket) public payable {\n//     //     require(msg.value > 2 wei, \"Not enough token\");\n//     //     require(_numTicket >= 1 && _numTicket <= 10, \"Number ticket out of range\");\n//     //     Participants storage newPlayer = allLottery[playerCount];\n//     //     newPlayer.player = payable(msg.sender);\n//     //     newPlayer.numTicket = _numTicket;\n//     //     ListNumberTicket storage addTicket = groupTicket[newPlayer.numTicket];\n//     //     addTicket.groupPlayer.push(payable(msg.sender));\n//     //     increasePlayerCount();\n//     // }\n\n//     //      function increasePlayerCount() internal {\n//     //     playerCount++;\n//     // }\n//     //-------------------------- Get random number ---------------------------------------------\n\n//       constructor(uint64 subscriptionId) VRFConsumerBaseV2(vrfCoordinator) {\n//         COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);\n//         s_owner = msg.sender;\n//         s_subscriptionId = subscriptionId;\n//     }\n\n//     // Assumes the subscription is funded sufficiently.\n//     function requestRandomWords() external onlyOwner {\n//         // Will revert if subscription is not set and funded.\n//         s_requestId = COORDINATOR.requestRandomWords(\n//         keyHash,\n//         s_subscriptionId,\n//         requestConfirmations,\n//         callbackGasLimit,\n//         numWords\n//         ) % 20 + 1;\n//     }\n\n//     function fulfillRandomWords(\n//         uint256, /* requestId */\n//         uint256[] memory randomWords\n//     ) internal override {\n//         s_randomWords = randomWords;\n//     }\n   \n//     //-------------------------------------------------------------------------------------------\n\n    \n//     modifier onlyowner() {\n//       require(msg.sender == s_owner);\n//       _;\n//     }\n// }\n"
+			}
+		},
+		"settings": {
+			"optimizer": {
+				"enabled": false,
+				"runs": 200
+			},
+			"outputSelection": {
+				"*": {
+					"": [
+						"ast"
+					],
+					"*": [
+						"abi",
+						"metadata",
+						"devdoc",
+						"userdoc",
+						"storageLayout",
+						"evm.legacyAssembly",
+						"evm.bytecode",
+						"evm.deployedBytecode",
+						"evm.methodIdentifiers",
+						"evm.gasEstimates",
+						"evm.assembly"
+					]
+				}
+			}
+		}
+	},
+	"output": {
+		"errors": [
+			{
+				"component": "general",
+				"errorCode": "3420",
+				"formattedMessage": "Warning: Source file does not specify required compiler version! Consider adding \"pragma solidity ^0.8.15;\"\n--> contracts/Lottery.sol\n\n",
+				"message": "Source file does not specify required compiler version! Consider adding \"pragma solidity ^0.8.15;\"",
+				"severity": "warning",
+				"sourceLocation": {
+					"end": -1,
+					"file": "contracts/Lottery.sol",
+					"start": -1
+				},
+				"type": "Warning"
+			}
+		],
+		"sources": {
+			"contracts/Lottery.sol": {
+				"ast": {
+					"absolutePath": "contracts/Lottery.sol",
+					"exportedSymbols": {},
+					"id": 1,
+					"license": "MIT",
+					"nodeType": "SourceUnit",
+					"nodes": [],
+					"src": "4193:0:0"
+				},
+				"id": 0
+			}
+		}
+	}
+}

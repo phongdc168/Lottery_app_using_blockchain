@@ -8,6 +8,33 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint64",
+						"name": "subscriptionId",
+						"type": "uint64"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "have",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "want",
+						"type": "address"
+					}
+				],
+				"name": "OnlyCoordinatorCanFulfill",
+				"type": "error"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "_numTicket",
 						"type": "uint256"
@@ -19,24 +46,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "index",
-						"type": "uint256"
-					}
-				],
-				"name": "getAmountTicket",
+				"inputs": [],
+				"name": "getAmountPlayer",
 				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
-					},
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -57,7 +73,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "getNumberPlayer",
+				"name": "getLuckyNumber",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -144,13 +160,44 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "requestId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "randomWords",
+						"type": "uint256[]"
+					}
+				],
+				"name": "rawFulfillRandomWords",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
-				"name": "owner",
+				"name": "requestRandomWords",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "s_randomWords",
 				"outputs": [
 					{
-						"internalType": "address",
+						"internalType": "uint256",
 						"name": "",
-						"type": "address"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -158,7 +205,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "randomResult",
+				"name": "s_requestId",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -197,12 +244,60 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/Lottery.sol": {
-			"keccak256": "0xfe68a42677327ce5fb28b019377e53315af337ae4ea6f77e775d1c54c2b080fd",
+		"@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol": {
+			"keccak256": "0x3d709a5e0f1f9b8841172b10ba8af785dd51a13eda9fc395723a706e51329904",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://aa7f38d413aee9cba249c7e933be5931b51b8c1ee1f9683e6caa80b0315d7c92",
-				"dweb:/ipfs/QmTnN3Dzrq6Yt5zvmKM6c3hfSLWsyaMYkPYBVBcUkA2VVH"
+				"bzz-raw://038eef992d813c20737fbe94e3a36e5d541d1aa736158dd2a43dd5b840b8c360",
+				"dweb:/ipfs/QmZWJ25Yr1sUSAsfJRKvTMDmGkmy63hHhB495CUL1bpNz4"
+			]
+		},
+		"@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol": {
+			"keccak256": "0xcb29ee50ee2b05441e4deebf8b4756a0feec4f5497e36b6a1ca320f7ce561802",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://87b4f2ac9fe4e83334c0cc7b070989f133647f20c2b2e8f2224e10d37bebc6df",
+				"dweb:/ipfs/QmYS2z7xmTArVpxiNM8Czj1qKL56HMw61Lzdjto9m3B5PL"
+			]
+		},
+		"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol": {
+			"keccak256": "0x652fee292f698d8dba81bf287cb71f1682f6483b67ebe601a5f7387dcfc30b34",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://98c7bba29bcab7240cdaada7dd7cbe3529fec83314801270c46239e72a9e84d7",
+				"dweb:/ipfs/QmfHCc1KMygjXchXVwafWTkFjhbb2SQ3Cu5GzRTdV4CCCh"
+			]
+		},
+		"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol": {
+			"keccak256": "0x7454006cccb737612b00104d2f606d728e2818b778e7e55542f063c614ce46ba",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6ec10894beb0f7537fba35e501fd1c5d35440e8c8f5ced1b8e57722a1d0879a8",
+				"dweb:/ipfs/Qmbc3bNmtDewTGSmrPD93Ubp8saAz8xCxsgTjSmpNTqukz"
+			]
+		},
+		"@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol": {
+			"keccak256": "0x55cf2bd9fc76704ddcdc19834cd288b7de00fc0f298a40ea16a954ae8991db2d",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://37e4df53c8d2e3c1062c1c7b2c17366db7de03bfd2559d340ca95c588aa49c2f",
+				"dweb:/ipfs/QmQ9vsG3o4wED3FRogiSUhdzJvZSjjYFtydzXvFEJtgZk4"
+			]
+		},
+		"@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol": {
+			"keccak256": "0x963ea7f0b48b032eef72fe3a7582edf78408d6f834115b9feadd673a4d5bd149",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d6520943ea55fdf5f0bafb39ed909f64de17051bc954ff3e88c9e5621412c79c",
+				"dweb:/ipfs/QmWZ4rAKTQbNG2HxGs46AcTXShsVytKeLs7CUCdCSv5N7a"
+			]
+		},
+		"contracts/Lottery.sol": {
+			"keccak256": "0x51d9fc7a4a5b4b7763c23bb7d8daa3fbfb230902e73af73a2fd460a90a927bd1",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://675aed8046fd239a0fbe2cbb69173e1bed8a3c577bc38a8ada79663ae8e72331",
+				"dweb:/ipfs/Qmdw9o6jT5M55D6ogsHiSvyiJa1g96M7H95mzbpPspUU6g"
 			]
 		}
 	},

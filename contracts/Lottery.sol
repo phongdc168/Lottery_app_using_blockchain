@@ -1,13 +1,37 @@
-
-
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.11;
 
-contract Lottery {
+import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
+import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-    // Declare variable
-    address public owner;
+contract Lottery is VRFConsumerBaseV2 {
+    VRFCoordinatorV2Interface COORDINATOR;
+
+    // Your subscription ID.
+     uint64 s_subscriptionId;
+
+    // Rinkeby coordinator
+    address vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab;
+
+    // The gas lane to use, which specifies the maximum gas price to bump to.
+    bytes32 keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
+    
+    uint32 callbackGasLimit = 100000;
+
+    // The default is 3, but you can set this higher.
+    uint16 requestConfirmations = 3;
+
+    // For this example, retrieve 2 random values in one request.
+    // Cannot exceed VRFCoordinatorV2.MAX_NUM_WORDS.
+    uint32 numWords =  2;
+
+    uint256[] public s_randomWords;
+    uint256 public s_requestId;
+    address s_owner;
+    
     uint public lotteryId;
     mapping (uint => address payable) public lotteryHistory;
 
@@ -23,9 +47,7 @@ contract Lottery {
     mapping(uint => Participants) internal allLottery;  
 
     uint internal playerCount = 0;
-    bytes32 internal keyHash; // identifies which Chainlink oracle to use
-    uint internal fee;        // fee to get random number
-    uint public randomResult;
+
     function getWinnerByLottery(uint lottery) public view returns (address payable) {
         return lotteryHistory[lottery];
     }
@@ -42,7 +64,7 @@ contract Lottery {
         );
     }
     
-    function getNumberPlayer() public view returns (uint){
+    function getAmountPlayer() public view returns (uint){
         return playerCount;
     }
     function enter(uint _numTicket) public payable {
@@ -56,32 +78,43 @@ contract Lottery {
         increasePlayerCount();
     }
 
-    function getAmountTicket(uint index) public view returns (uint, address[] memory){
-        address[] getListPlayer;
-        for(uint i = 0; i < groupTicket[index].groupPlayer.length; i++){
-            getListPlayer.push(groupTicket[index].groupPlayer[i]);
-        }
-        return (groupTicket[index].groupPlayer.length, getListPlayer);
+         function increasePlayerCount() internal {
+        playerCount++;
     }
-    // function getNumberTicket()
-    // function payWinner() public {
-    //     require(randomResult > 0, "Must have a source of randomness before choosing winner");
-    //     uint index = randomResult % players.length;
-    //     players[index].transfer(address(this).balance);
+    //-------------------------- Get random number ---------------------------------------------
 
-    //     lotteryHistory[lotteryId] = players[index];
-    //     lotteryId++;
-        
-    //     // reset the state of the contract
-    //     players = new address payable[](0);
-    //     randomResult = 0;
-    // }
-    function increasePlayerCount() internal {
-    playerCount++;
-  }
+      constructor(uint64 subscriptionId) VRFConsumerBaseV2(vrfCoordinator) {
+        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
+        s_owner = msg.sender;
+        s_subscriptionId = subscriptionId;
+    }
 
-    modifier onlyowner() {
-      require(msg.sender == owner);
+    // Assumes the subscription is funded sufficiently.
+    function requestRandomWords() external onlyOwner {
+        // Will revert if subscription is not set and funded.
+        s_requestId = COORDINATOR.requestRandomWords(
+        keyHash,
+        s_subscriptionId,
+        requestConfirmations,
+        callbackGasLimit,
+        numWords
+        ) % playerCount;
+    }
+
+    function fulfillRandomWords(
+        uint256, /* requestId */
+        uint256[] memory randomWords
+    ) internal override {
+        s_randomWords = randomWords;
+    }
+   
+    //-------------------------------------------------------------------------------------------
+    
+    function getLuckyNumber() public view returns(uint){
+        return allLottery[s_requestId].numTicket;
+    }
+    modifier onlyOwner() {
+      require(msg.sender == s_owner);
       _;
     }
 }
