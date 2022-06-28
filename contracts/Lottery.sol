@@ -7,17 +7,18 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract Lottery is VRFConsumerBaseV2 {
-    VRFCoordinatorV2Interface COORDINATOR;
+    // Rinkeby coordinator: 0x6168499c0cFfCaCD319c818142124B7A15E857ab
+contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab) {
+    VRFCoordinatorV2Interface constant COORDINATOR = 
+    VRFCoordinatorV2Interface(0x6168499c0cFfCaCD319c818142124B7A15E857ab);
+
+    //------------------------------ Declare variable -------------------------------
 
     // Your subscription ID.
-     uint64 s_subscriptionId;
-
-    // Rinkeby coordinator
-    address vrfCoordinator = 0x6168499c0cFfCaCD319c818142124B7A15E857ab;
+     uint64 constant s_subscriptionId = 7130;
 
     // The gas lane to use, which specifies the maximum gas price to bump to.
-    bytes32 keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
+    bytes32 constant keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
     
     uint32 callbackGasLimit = 100000;
 
@@ -30,7 +31,7 @@ contract Lottery is VRFConsumerBaseV2 {
 
     uint256[] public s_randomWords;
     uint256 public s_requestId;
-    address s_owner;
+    address s_owner = msg.sender;
     
     uint public lotteryId;
     mapping (uint => address payable) public lotteryHistory;
@@ -47,13 +48,16 @@ contract Lottery is VRFConsumerBaseV2 {
     mapping(uint => Participants) internal allLottery;  
 
     uint internal playerCount = 0;
+    uint256 prizePool;
+
+    //--------------------------------------------------------------------------------
 
     function getWinnerByLottery(uint lottery) public view returns (address payable) {
         return lotteryHistory[lottery];
     }
 
     function getBalance() public view returns (uint) {
-        return address(this).balance;
+        return prizePool;
     }
 
     function getPlayers(uint _index) public view returns (address payable, uint) {
@@ -69,6 +73,7 @@ contract Lottery is VRFConsumerBaseV2 {
     }
     function enter(uint _numTicket) public payable {
         require(msg.value > 2 wei, "Not enough token");
+        prizePool += msg.value;
         require(_numTicket >= 1 && _numTicket <= 10, "Number ticket out of range");
         Participants storage newPlayer = allLottery[playerCount];
         newPlayer.player = payable(msg.sender);
@@ -82,12 +87,6 @@ contract Lottery is VRFConsumerBaseV2 {
         playerCount++;
     }
     //-------------------------- Get random number ---------------------------------------------
-
-      constructor(uint64 subscriptionId) VRFConsumerBaseV2(vrfCoordinator) {
-        COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
-        s_owner = msg.sender;
-        s_subscriptionId = subscriptionId;
-    }
 
     // Assumes the subscription is funded sufficiently.
     function requestRandomWords() external onlyOwner {
@@ -110,9 +109,17 @@ contract Lottery is VRFConsumerBaseV2 {
    
     //-------------------------------------------------------------------------------------------
     
+    function closeLottery() external onlyOwner{
+        requestRandomWords();
+        
+    }
     function getLuckyNumber() public view returns(uint){
         return allLottery[s_requestId].numTicket;
     }
+
+    // function claimReward() external{
+    //     uint256 winnerPrize = 
+    // }
     modifier onlyOwner() {
       require(msg.sender == s_owner);
       _;
