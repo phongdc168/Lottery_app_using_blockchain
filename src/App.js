@@ -26,7 +26,7 @@ function App() {
   //==============================================================================
 
   const declareContract = async () =>{
-  let lotteryAddress = "0xade69a05918dD249469EeA5B8E549af60AceC6BD";
+  let lotteryAddress = "0x9f1411a8f8A7df26e1B69ed063E54BbeC324D47F";
 
   const lotteryContract = new ethers.Contract(lotteryAddress, lotteryAbi, provider);
   let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
@@ -85,6 +85,7 @@ function App() {
 
 
   const getPlayers = async () => {
+    let numTicket = document.getElementById("getNumber").value;
     // event.preventDefault();
     await (await contract.enter({value:10})).wait();
     console.log(contract.getPlayers());
@@ -115,9 +116,9 @@ function App() {
         <div className="lottery-area">
           <div className="run-lottery">
             <div>
-              Giá vé số: 0.01 ETH
+              Giá vé số: 2 wei
         <div className="pay-money">
-                <input type="text" placeholder="Chọn số từ 1->100" id="getNumber" className="get-number" />
+                <input type="text" placeholder="Chọn số từ 1->10" id="getNumber" className="get-number" />
                 <button  onClick={getPlayers}className="play-game">
                   Mua vé
           </button>
