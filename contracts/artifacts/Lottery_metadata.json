@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.12+commit.f00d7308"
+		"version": "0.8.15+commit.e14f2714"
 	},
 	"language": "Solidity",
 	"output": {
@@ -20,6 +20,13 @@
 				],
 				"name": "OnlyCoordinatorCanFulfill",
 				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "_requestRandomWords",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			},
 			{
 				"inputs": [],
@@ -56,7 +63,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "getBalance",
+				"name": "getAmountWinner",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -69,12 +76,31 @@
 			},
 			{
 				"inputs": [],
-				"name": "getLuckyNumber",
+				"name": "getBalance",
 				"outputs": [
 					{
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "index",
+						"type": "uint256"
+					}
+				],
+				"name": "getListWinner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -282,11 +308,11 @@
 			]
 		},
 		"contracts/Lottery.sol": {
-			"keccak256": "0x90eb3c82b2ac4e0b0c3b691275d71563df5acd8049d98e21742d9f3aceb3a498",
+			"keccak256": "0xe4c9d8baace03e92a3603ed60fdd4738bf5f2964d4cce5b9879317cdc027e9a0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://e38b088c034aebf2e618fdb097e07906911e68510ed0eef70e9fbc0843f1b99f",
-				"dweb:/ipfs/QmVfWgQZ6m2ygAuqS8MnSRp14mDfHRMxNQg1rAQp5Eh7gT"
+				"bzz-raw://88f745651c6bf86346cd7200f4c4ef821a51bfa7040a11b4724a2a7100ef481b",
+				"dweb:/ipfs/QmZS8Z5Vd5t3jVxwG7eATk3an817xYRFVrecJiTLukpxwC"
 			]
 		}
 	},

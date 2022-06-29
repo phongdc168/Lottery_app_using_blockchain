@@ -12,10 +12,10 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     VRFCoordinatorV2Interface constant COORDINATOR = 
     VRFCoordinatorV2Interface(0x6168499c0cFfCaCD319c818142124B7A15E857ab);
 
-    //------------------------------ Declare variable -------------------------------
+    //------------------------------ Declare variable -------------------------------------
 
     // Your subscription ID.
-     uint64 constant s_subscriptionId = 7130;
+     uint64 constant s_subscriptionId = 7370;
 
     // The gas lane to use, which specifies the maximum gas price to bump to.
     bytes32 constant keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
@@ -49,8 +49,9 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
 
     uint internal playerCount = 0;
     uint256 prizePool;
+    uint256 luckyNumber;
 
-    //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------
 
     function getWinnerByLottery(uint lottery) public view returns (address payable) {
         return lotteryHistory[lottery];
@@ -86,10 +87,10 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
          function increasePlayerCount() internal {
         playerCount++;
     }
-    //-------------------------- Get random number ---------------------------------------------
+    //------------------------------------Get random number --------------------------------------
 
     // Assumes the subscription is funded sufficiently.
-    function requestRandomWords() external onlyOwner {
+    function _requestRandomWords() external onlyOwner {
         // Will revert if subscription is not set and funded.
         s_requestId = COORDINATOR.requestRandomWords(
         keyHash,
@@ -97,7 +98,9 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         requestConfirmations,
         callbackGasLimit,
         numWords
-        ) % playerCount;
+        ) % playerCount ;
+        luckyNumber = allLottery[s_requestId].numTicket;
+        
     }
 
     function fulfillRandomWords(
@@ -109,17 +112,37 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
    
     //-------------------------------------------------------------------------------------------
     
+    //------------------------------------- Claim reward ----------------------------------------
+
     function closeLottery() external onlyOwner{
-        requestRandomWords();
-        
+        uint256 lenWinner = groupTicket[luckyNumber].groupPlayer.length;
+        // _requestRandomWords();
+        uint256 winnerPrize = prizePool / lenWinner;
+        require(address(this).balance !=0, "prizePool is empty");
+        require(lenWinner != 0, "No winner");
+        for(uint256 i = 0; i < lenWinner; i++){
+            _transferPrize(winnerPrize, groupTicket[luckyNumber].groupPlayer[i]);
+            // prizePool -= winnerPrize;
+            // groupTicket[luckyNumber].groupPlayer[i].transfer(winnerPrize);
+        }
     }
-    function getLuckyNumber() public view returns(uint){
-        return allLottery[s_requestId].numTicket;
+    
+    function _transferPrize(uint256 _winnerPrize, address payable winner) private{
+        prizePool -= _winnerPrize;
+        winner.transfer(_winnerPrize);
+        // payable(s_owner).transfer(prizePool);
     }
 
-    // function claimReward() external{
-    //     uint256 winnerPrize = 
-    // }
+    function getAmountWinner() public view returns(uint256){
+        return groupTicket[luckyNumber].groupPlayer.length;
+    }
+
+    function getListWinner(uint256 index) public view returns(address){
+        return groupTicket[luckyNumber].groupPlayer[index];
+    }
+
+    //------------------------------------------------------------------------------------------
+
     modifier onlyOwner() {
       require(msg.sender == s_owner);
       _;
