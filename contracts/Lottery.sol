@@ -34,7 +34,6 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     address s_owner = msg.sender;
     
     uint public lotteryId;
-    mapping (uint => address payable) public lotteryHistory;
 
     struct ListNumberTicket{
         address payable [] groupPlayer;
@@ -50,12 +49,10 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     uint internal playerCount = 0;
     uint256 prizePool;
     uint256 luckyNumber;
+    uint256 numTicketPlayer;
 
     //--------------------------------------------------------------------------------------
 
-    function getWinnerByLottery(uint lottery) public view returns (address payable) {
-        return lotteryHistory[lottery];
-    }
 
     function getBalance() public view returns (uint) {
         return prizePool;
@@ -72,15 +69,20 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     function getAmountPlayer() public view returns (uint){
         return playerCount;
     }
-    function enter(uint _numTicket) public payable {
-        require(msg.value > 2 wei, "Not enough token");
-        prizePool += msg.value;
-        require(_numTicket >= 1 && _numTicket <= 10, "Number ticket out of range");
+    function enterNumberTicket(uint256 _numTicketPlayer) public payable{
+        require(_numTicketPlayer >= 1 && _numTicketPlayer <= 10, "Number ticket out of range");
+        numTicketPlayer = _numTicketPlayer;
         Participants storage newPlayer = allLottery[playerCount];
         newPlayer.player = payable(msg.sender);
-        newPlayer.numTicket = _numTicket;
+        newPlayer.numTicket = _numTicketPlayer;
         ListNumberTicket storage addTicket = groupTicket[newPlayer.numTicket];
         addTicket.groupPlayer.push(payable(msg.sender));
+        enter();
+    }
+    function enter() public payable {
+        require(msg.value >= 2 wei, "Not enough token");
+        prizePool += msg.value;
+
         increasePlayerCount();
     }
 
