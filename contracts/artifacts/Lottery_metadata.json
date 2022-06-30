@@ -36,14 +36,21 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "enter",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_numTicket",
+						"name": "_numTicketPlayer",
 						"type": "uint256"
 					}
 				],
-				"name": "enter",
+				"name": "enterNumberTicket",
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
@@ -125,44 +132,6 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "lottery",
-						"type": "uint256"
-					}
-				],
-				"name": "getWinnerByLottery",
-				"outputs": [
-					{
-						"internalType": "address payable",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "lotteryHistory",
-				"outputs": [
-					{
-						"internalType": "address payable",
-						"name": "",
-						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -308,11 +277,11 @@
 			]
 		},
 		"contracts/Lottery.sol": {
-			"keccak256": "0xe4c9d8baace03e92a3603ed60fdd4738bf5f2964d4cce5b9879317cdc027e9a0",
+			"keccak256": "0x966ec55973959d0da89ed49c930b2f69432366dbb7c5aeea7dfe4a54d3e76d01",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://88f745651c6bf86346cd7200f4c4ef821a51bfa7040a11b4724a2a7100ef481b",
-				"dweb:/ipfs/QmZS8Z5Vd5t3jVxwG7eATk3an817xYRFVrecJiTLukpxwC"
+				"bzz-raw://168c63abcebb11faa70e50b642d29f6917cddba0b4d7f97df5ee64861c5a1800",
+				"dweb:/ipfs/QmbwqGzugVMvcQvQcSVjUNTZ341iaaVFv8BQEMZ8ezgzu1"
 			]
 		}
 	},
