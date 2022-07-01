@@ -6,6 +6,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "./extensions/IERC20.sol";
 
     // Rinkeby coordinator: 0x6168499c0cFfCaCD319c818142124B7A15E857ab
 contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab) {
@@ -42,7 +43,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
 
     struct Participants {
         address payable player;
-        uint numTicket;
+        uint256 numTicket;
     }
     mapping(uint => Participants) internal allLottery;  
 
@@ -50,6 +51,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     uint256 prizePool;
     uint256 luckyNumber;
     uint256 numTicketPlayer;
+    IERC20 public token;
 
     //--------------------------------------------------------------------------------------
 
@@ -69,26 +71,24 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     function getAmountPlayer() public view returns (uint){
         return playerCount;
     }
-    function enterNumberTicket(uint256 _numTicketPlayer) public payable{
-        require(_numTicketPlayer >= 1 && _numTicketPlayer <= 10, "Number ticket out of range");
-        numTicketPlayer = _numTicketPlayer;
+
+    function enter(uint256 numTicket) public payable {
+        require(token.balanceOf(msg.sender) > 2, "Not enough token");
+        require(numTicket >= 0 && numTicket <= 10, "Number ticket out of range");
+        token.transferFrom(msg.sender, address(this), 2);
+        prizePool += 2 wei;
         Participants storage newPlayer = allLottery[playerCount];
         newPlayer.player = payable(msg.sender);
-        newPlayer.numTicket = _numTicketPlayer;
+        newPlayer.numTicket = numTicket;
         ListNumberTicket storage addTicket = groupTicket[newPlayer.numTicket];
         addTicket.groupPlayer.push(payable(msg.sender));
-        enter();
-    }
-    function enter() public payable {
-        require(msg.value >= 2 wei, "Not enough token");
-        prizePool += msg.value;
-
         increasePlayerCount();
     }
 
-         function increasePlayerCount() internal {
+    function increasePlayerCount() internal {
         playerCount++;
     }
+
     //------------------------------------Get random number --------------------------------------
 
     // Assumes the subscription is funded sufficiently.
