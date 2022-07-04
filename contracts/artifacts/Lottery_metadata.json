@@ -39,7 +39,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_numTicket",
+						"name": "numTicket",
 						"type": "uint256"
 					}
 				],
@@ -131,44 +131,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "lottery",
-						"type": "uint256"
-					}
-				],
-				"name": "getWinnerByLottery",
-				"outputs": [
-					{
-						"internalType": "address payable",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "lotteryHistory",
-				"outputs": [
-					{
-						"internalType": "address payable",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "lotteryId",
 				"outputs": [
@@ -226,6 +188,19 @@
 						"internalType": "uint256",
 						"name": "",
 						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "token",
+				"outputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -308,11 +283,19 @@
 			]
 		},
 		"contracts/Lottery.sol": {
-			"keccak256": "0xe4c9d8baace03e92a3603ed60fdd4738bf5f2964d4cce5b9879317cdc027e9a0",
+			"keccak256": "0xa1e5b10e0d9886e65da91273b1aba645e2405e71f97254c94a39083f30f1743f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://88f745651c6bf86346cd7200f4c4ef821a51bfa7040a11b4724a2a7100ef481b",
-				"dweb:/ipfs/QmZS8Z5Vd5t3jVxwG7eATk3an817xYRFVrecJiTLukpxwC"
+				"bzz-raw://1a0d75d12b772940f533317c59af1170ed2d2dcac9feaefad87aa4df4ed3ef3a",
+				"dweb:/ipfs/QmYhcLEBwsdrtfyNRVNbFhYdwuto2WQNG2FMSLuBfzEgJa"
+			]
+		},
+		"contracts/extensions/IERC20.sol": {
+			"keccak256": "0x49bf66439bd18c752b970c057a57ccc938f16004e690f3750b93f5faba5db8ec",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5759bfea0017d33200fd664da35bc686851c915b08cff971d81cd65ee94e708c",
+				"dweb:/ipfs/QmefwrU5WXqEfei8iDr89NJCAq7tfcBN7XmpGcdq1bKwjX"
 			]
 		}
 	},
