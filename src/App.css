@@ -25,15 +25,19 @@ body{
   background-color: yellow;
   font-weight: 800;
   height: 50px;
-  width: auto;
   font-size: calc(5px + 2vmin);
   border-radius: 5px;
   border: 1px solid black;
   margin-right: 0;
   cursor: pointer;
-  text-overflow: ellipsis; overflow: hidden; -webkit-line-clamp: 3; -webkit-box-orient: vertical; display: -webkit-box;
-}
 
+}
+.short-text{
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  width: 20rem;
+}
 .layout-body{
   display: flex;
   min-height: 100vh;
@@ -65,11 +69,10 @@ body{
   margin-right: 0;
 }
 .pot{
-  height: 50%;
+  height: 30%;
   color: #fff;
-
 }
-.play-game{
+.bt1{
   background-color: yellow;
   font-weight: 800;
   height: 50px;
@@ -77,7 +80,16 @@ body{
   font-size: calc(5px + 2vmin);
   border-radius: 5px;
   border: 1px solid black;
-  margin-right: 0;
+  cursor: pointer;
+}
+.bt2{
+  background-color: rgb(65, 212, 176);
+  font-weight: 800;
+  height: 50px;
+  width: 200px;
+  font-size: calc(5px + 2vmin);
+  border-radius: 5px;
+  border: 1px solid black;
   cursor: pointer;
 }
 .result-lottery{
@@ -94,7 +106,24 @@ body{
   background-color: brown;
   background-color: rgb(48, 43, 43);
   border: 1px solid white;
-  color: yellow;
+}
+.amount-players{
+  display: flex;
+  height: 50px;
+  margin-bottom:20px;
+
+}
+.amount-players p{
+}
+.list-player{
+  height: auto;
+  display: flex;
+}
+.address-player{
+  width: 80%;
+}
+.ticket-player{
+  width: 20%;
 }
 
 

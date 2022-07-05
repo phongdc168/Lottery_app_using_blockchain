@@ -57,7 +57,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
 
 
     function getBalance() public view returns (uint) {
-        return prizePool;
+        return address(this).balance;
     }
 
     function getPlayers(uint _index) public view returns (address payable, uint) {
