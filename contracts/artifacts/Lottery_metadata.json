@@ -36,21 +36,14 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "enter",
-				"outputs": [],
-				"stateMutability": "payable",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_numTicketPlayer",
+						"name": "numTicket",
 						"type": "uint256"
 					}
 				],
-				"name": "enterNumberTicket",
+				"name": "enter",
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
@@ -199,6 +192,19 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "token",
+				"outputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -277,11 +283,19 @@
 			]
 		},
 		"contracts/Lottery.sol": {
-			"keccak256": "0x966ec55973959d0da89ed49c930b2f69432366dbb7c5aeea7dfe4a54d3e76d01",
+			"keccak256": "0xa1e5b10e0d9886e65da91273b1aba645e2405e71f97254c94a39083f30f1743f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://168c63abcebb11faa70e50b642d29f6917cddba0b4d7f97df5ee64861c5a1800",
-				"dweb:/ipfs/QmbwqGzugVMvcQvQcSVjUNTZ341iaaVFv8BQEMZ8ezgzu1"
+				"bzz-raw://1a0d75d12b772940f533317c59af1170ed2d2dcac9feaefad87aa4df4ed3ef3a",
+				"dweb:/ipfs/QmYhcLEBwsdrtfyNRVNbFhYdwuto2WQNG2FMSLuBfzEgJa"
+			]
+		},
+		"contracts/extensions/IERC20.sol": {
+			"keccak256": "0x49bf66439bd18c752b970c057a57ccc938f16004e690f3750b93f5faba5db8ec",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5759bfea0017d33200fd664da35bc686851c915b08cff971d81cd65ee94e708c",
+				"dweb:/ipfs/QmefwrU5WXqEfei8iDr89NJCAq7tfcBN7XmpGcdq1bKwjX"
 			]
 		}
 	},
