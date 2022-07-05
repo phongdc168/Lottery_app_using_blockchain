@@ -113,9 +113,8 @@ body{
   margin-bottom:20px;
 
 }
-.amount-players p{
-}
-.list-player{
+
+.player-title{
   height: auto;
   display: flex;
 }

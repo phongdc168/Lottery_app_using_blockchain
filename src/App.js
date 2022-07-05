@@ -105,7 +105,8 @@ function App() {
   const getPlayers = async () =>{
     for(let i = 0; i < amountPlayer; i++){
     const player = await lotteryContract.getPlayers(i);
-    console.log(Object.values(player)[1]);
+    const numTicketPlayer = Object.values(player)[1];
+    console.log(parseInt(Object.values(numTicketPlayer)[0], 16));
     }
   }
 
@@ -152,9 +153,12 @@ function App() {
           <div className="amount-players">
             <p style={{color: 'yellow'}}>Người tham gia:  </p> <p style={{color: 'rgb(65, 212, 176)'}}>{amountPlayer}</p>
           </div>
-          <div className="list-player">          
+          <div className="player-title">          
           <div className="address-player">Địa chỉ</div>
           <div className="ticket-player">Số</div>
+          </div>
+          <div className="list-player">
+            
           </div>
           </div>
       </div>
