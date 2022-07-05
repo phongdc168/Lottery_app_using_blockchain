@@ -73,10 +73,10 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     }
 
     function enter(uint256 numTicket) public payable {
-        require(token.balanceOf(msg.sender) > 2, "Not enough token");
+        require(msg.value > 2, "Not enough token");
         require(numTicket >= 0 && numTicket <= 10, "Number ticket out of range");
-        token.transferFrom(msg.sender, address(this), 2);
-        prizePool += 2 wei;
+        // token.transferFrom(msg.sender, address(this), 2);
+        prizePool += msg.value;
         Participants storage newPlayer = allLottery[playerCount];
         newPlayer.player = payable(msg.sender);
         newPlayer.numTicket = numTicket;
