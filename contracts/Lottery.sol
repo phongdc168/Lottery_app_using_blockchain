@@ -32,7 +32,6 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
 
     uint256[] public s_randomWords;
     uint256 public s_requestId;
-    address s_owner = msg.sender;
     
     uint public lotteryId;
 
@@ -49,7 +48,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
 
     uint internal playerCount = 0;
     uint256 prizePool;
-    uint256 luckyNumber;
+    uint256 public luckyNumber;
     uint256 numTicketPlayer;
     IERC20 public token;
 
@@ -92,8 +91,9 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     //------------------------------------Get random number --------------------------------------
 
     // Assumes the subscription is funded sufficiently.
-    function _requestRandomWords() external onlyOwner {
+    function _requestRandomWords() external {
         // Will revert if subscription is not set and funded.
+        require(playerCount != 0, "Amount player null");
         s_requestId = COORDINATOR.requestRandomWords(
         keyHash,
         s_subscriptionId,
@@ -102,6 +102,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         numWords
         ) % playerCount ;
         luckyNumber = allLottery[s_requestId].numTicket;
+        closeLottery();
         
     }
 
@@ -112,27 +113,23 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         s_randomWords = randomWords;
     }
    
-    //-------------------------------------------------------------------------------------------
-    
     //------------------------------------- Claim reward ----------------------------------------
 
-    function closeLottery() external onlyOwner{
+    function closeLottery() private {
         uint256 lenWinner = groupTicket[luckyNumber].groupPlayer.length;
-        // _requestRandomWords();
         uint256 winnerPrize = prizePool / lenWinner;
         require(address(this).balance !=0, "prizePool is empty");
         require(lenWinner != 0, "No winner");
         for(uint256 i = 0; i < lenWinner; i++){
             _transferPrize(winnerPrize, groupTicket[luckyNumber].groupPlayer[i]);
-            // prizePool -= winnerPrize;
-            // groupTicket[luckyNumber].groupPlayer[i].transfer(winnerPrize);
+           
         }
+        _reset();
     }
     
     function _transferPrize(uint256 _winnerPrize, address payable winner) private{
         prizePool -= _winnerPrize;
         winner.transfer(_winnerPrize);
-        // payable(s_owner).transfer(prizePool);
     }
 
     function getAmountWinner() public view returns(uint256){
@@ -143,10 +140,21 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         return groupTicket[luckyNumber].groupPlayer[index];
     }
 
+    function getLuckyNumber() public view returns(uint256){
+        return luckyNumber;
+    }
+
+    //------------------------------------- Reset lottery ------------------------------------
+
+    function _reset() private{
+        for(uint256 i = 0;i < playerCount; i++){
+            delete allLottery[i];
+        }
+        playerCount = 0;
+        luckyNumber = 0;
+    }
+
     //------------------------------------------------------------------------------------------
 
-    modifier onlyOwner() {
-      require(msg.sender == s_owner);
-      _;
-    }
+   
 }

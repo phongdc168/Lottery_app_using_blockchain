@@ -68,8 +68,8 @@
       ]
     },
     "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/Lottery.sol": {
-      "lastModificationDate": 1657004108459,
-      "contentHash": "3b288e8ebdcba84bd85ede036c7eb702",
+      "lastModificationDate": 1657101230585,
+      "contentHash": "e8073017382a2aa2d81cbc5aacd19b3e",
       "sourceName": "contracts/Lottery.sol",
       "solcConfig": {
         "version": "0.8.11",

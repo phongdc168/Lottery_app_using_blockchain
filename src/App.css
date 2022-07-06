@@ -1,5 +1,7 @@
 body{
   margin:0;
+  background-color: rgb(48, 43, 43);
+  font-family: Helvetica;
 }
 .main{
   min-height: 100vh;
@@ -49,8 +51,7 @@ body{
   height:auto;
 }
 .run-lottery{
-  height: 50%;
-  background-color: rgb(48, 43, 43);
+  height: 40%;
   border: 1px solid white;
   width: 100%;
   color: rgb(247, 243, 243);
@@ -97,18 +98,14 @@ body{
   cursor: pointer;
 }
 .result-lottery{
-  height: 50%;
+  height: auto;
   width: 100%;
-  background-color: rgb(118, 163, 14);
-  background-color: rgb(48, 43, 43);
   border-right: 1px solid white;
   color:turquoise;
 }
 .participants{
   height: auto;
   width: 40%;
-  background-color: brown;
-  background-color: rgb(48, 43, 43);
   border: 1px solid white;
 }
 .amount-players{
@@ -123,12 +120,12 @@ body{
   display: flex;
 }
 .address-player{
-  width: 80%;
+  width: 75%;
   height: auto;
 
 }
 .ticket-player{
-  width: 20%;
+  width: 23%;
   height: auto;
   
 }

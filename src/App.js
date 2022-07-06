@@ -17,8 +17,8 @@ function App() {
   const [signer, setSigner] = useState();
   const [prizePool, setPrizePool] = useState('0');
   const [amountPlayer, setAmountPlayer] = useState('0');
-  const [listPlayerGame, setListPlayerGame] = useState();
-
+  const [resultLottery, setResultLottery] = useState('0');
+  const [amountWinner, setAmountWinner] = useState('0')
 
   //----------------------------- Update State ---------------------------------
 
@@ -30,20 +30,12 @@ function App() {
     if (lotteryContract) getBalance();
     if (lotteryContract) getAmountPlayer();
     if (lotteryContract) getPlayers();
-
   }
-
-  // useInterval(()=>{
-  //   getBalance();
-  //   getAmountPlayer();
-  //   getPlayers();
-  // }, 500)
-
 
   //------------------------ Connect to contract -------------------------------
 
   const declareContract =  () =>{
-  let lotteryAddress = "0x4C1dA878740194Cc71f44A6047307eb7ec035526"; // Contract Rinkeby
+  let lotteryAddress = "0xA8F41C49ca3657b0C86998681d73d2cb8A599D9b"; // Contract Rinkeby
   // let lotteryAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Contract Localhost
 
   let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
@@ -141,10 +133,34 @@ function App() {
     }
   }
 
+//----------------------------- Result lottery ---------------------------------
+
+  const getResultLottery = async () =>{
+    const res = await lotteryContract.getLuckyNumber();
+    console.log("Result lottery", res);
+    setResultLottery(parseInt(Object.values(res)[0], 16));
+  }
 //----------------------------- Pick winner ------------------------------------
 
+  const pickWinner = async () =>{
+    await lotteryContract._requestRandomWords();
+    getResultLottery();
+    const amountWinner = await lotteryContract.getAmountWinner();
+    console.log("Amount Winner: ", amountWinner);
+    setAmountWinner(parseInt(Object.values(amountWinner)[0], 16));
+    let menuWinner = document.getElementById("listWinner");
+    menuWinner.innerHTML='';
 
+    for(let i = 0; i < amountWinner; i++){
+    const winner = await lotteryContract.getListWinner(i);
 
+    // Create list winner lottery
+    const newLiWinner = document.createElement("li");
+    newLiWinner.className = "li-winner short-text";
+    newLiWinner.innerHTML = winner;
+    document.getElementById("listWinner").appendChild(newLiWinner);
+    }
+  }
 
 //----------------------------------------------------------------------------
 
@@ -168,7 +184,7 @@ function App() {
               Giá vé: 5 Wei
         <div className="pay-money">
                 <input type="text" placeholder="Chọn số từ 1->10" id="getNumber" className="get-number" />
-                <button  onClick={enter}className="get-player bt1">
+                <button  onClick={enter} className="get-player bt1">
                   Mua vé
           </button>
               </div>
@@ -177,12 +193,15 @@ function App() {
               Tổng giải thưởng:
               <p>{prizePool} tỉ</p>
           </div>
-          <button className="bt2">
+          <button onClick={pickWinner} className="bt2">
                   Xổ số
           </button>
           </div>
           <div className="result-lottery">
-            Kết quả đợt trước:
+          <p>Kết quả đợt:<br/> 
+              Số may mắn: {resultLottery}<br/>
+              Danh sách chiến thắng: {amountWinner} người</p>
+            <ul id="listWinner"></ul>
             </div>
         </div>
         <div className="participants">
