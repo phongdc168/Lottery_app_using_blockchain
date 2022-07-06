@@ -120,10 +120,15 @@ body{
 }
 .address-player{
   width: 80%;
+  height: auto;
 }
 .ticket-player{
   width: 20%;
+  height: auto;
 }
-
+/* .list-player{
+  width: 100%;
+  height: auto;
+} */
 
 

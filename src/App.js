@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 import { Contract, ethers } from 'ethers'
 import lotteryAbi from "./lottery.abi.json"
 import { resolveProperties } from 'ethers/lib/utils';
-
+import './useInterval.js'
+import useInterval from './useInterval.js';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
   const [signer, setSigner] = useState();
   const [prizePool, setPrizePool] = useState('0');
   const [amountPlayer, setAmountPlayer] = useState('0');
+  const [listPlayerGame, setListPlayerGame] = useState();
 
 
   //----------------------------- Update State ---------------------------------
@@ -27,8 +29,16 @@ function App() {
   const updateState = () => {
     if (lotteryContract) getBalance();
     if (lotteryContract) getAmountPlayer();
-    if (lotteryContract) getPlayers();
+    // if (lotteryContract) getPlayers();
+
   }
+
+  // useInterval(()=>{
+  //   getBalance();
+  //   getAmountPlayer();
+  //   getPlayers();
+  // }, 500)
+
 
   //------------------------ Connect to contract -------------------------------
 
@@ -64,6 +74,7 @@ function App() {
       console.log('Need to install MetaMask');
       setErrorMessage('Please install MetaMask browser extension to interact');
     }
+    getPlayers();
   }
   // update account, will cause component re-render
   const accountChangedHandler = (newAccount) => {
@@ -86,10 +97,9 @@ function App() {
   const getBalance = async () =>{
     const pot = await lotteryContract.getBalance();
     setPrizePool(parseInt(Object.values(pot)[0], 16));
-    console.log(prizePool);
+    console.log("Balance: ", prizePool);
 } 
   
-
   const enter = () => {
     const numTicket = document.getElementById("getNumber").value;
     const costTicket = ethers.BigNumber.from("5");
@@ -99,15 +109,21 @@ function App() {
   const getAmountPlayer = async () =>{
     const cntPlayer = await lotteryContract.getAmountPlayer();
     setAmountPlayer(parseInt(Object.values(cntPlayer)[0], 16));
-    console.log(amountPlayer);
+    console.log("Amount Player: ", amountPlayer);
   }
 
   const getPlayers = async () =>{
+    const listPlayers = [];
+    const listNumberTicket = [];
     for(let i = 0; i < amountPlayer; i++){
     const player = await lotteryContract.getPlayers(i);
+    listPlayers.push(Object.values(player)[0]);
     const numTicketPlayer = Object.values(player)[1];
-    console.log(parseInt(Object.values(numTicketPlayer)[0], 16));
+    listNumberTicket.push(parseInt(Object.values(numTicketPlayer)[0], 16));
+    console.log("Number Ticket: ", parseInt(Object.values(numTicketPlayer)[0], 16));
     }
+    setListPlayerGame(listNumberTicket);
+    console.log("List player: ", listPlayerGame);
   }
 
   //==============================================================================
@@ -154,12 +170,16 @@ function App() {
             <p style={{color: 'yellow'}}>Người tham gia:  </p> <p style={{color: 'rgb(65, 212, 176)'}}>{amountPlayer}</p>
           </div>
           <div className="player-title">          
-          <div className="address-player">Địa chỉ</div>
-          <div className="ticket-player">Số</div>
+          <div className="address-player">Địa chỉ
+          {listPlayerGame}
           </div>
-          <div className="list-player">
+          <div className="ticket-player">Số
+          {/* {listPlayerGame} */}
+          </div>
+          </div>
+          {/* <div className="list-player">
             
-          </div>
+          </div> */}
           </div>
       </div>
     </div>
