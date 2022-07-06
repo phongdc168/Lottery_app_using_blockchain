@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { Contract, ethers } from 'ethers'
 import lotteryAbi from "./lottery.abi.json"
 import { resolveProperties } from 'ethers/lib/utils';
-import './useInterval.js'
 import useInterval from './useInterval.js';
+import { dblClick } from '@testing-library/user-event/dist/click';
 
 function App() {
 
@@ -29,7 +29,7 @@ function App() {
   const updateState = () => {
     if (lotteryContract) getBalance();
     if (lotteryContract) getAmountPlayer();
-    // if (lotteryContract) getPlayers();
+    if (lotteryContract) getPlayers();
 
   }
 
@@ -54,7 +54,7 @@ function App() {
   setLotteryContract(tmpContract);
   }
 
-  //--------------------------- Connect Wallet ---------------------------------
+  //--------------------------- Connect wallet ---------------------------------
 
   const connectWalletHandler = () => {
     declareContract();
@@ -74,7 +74,6 @@ function App() {
       console.log('Need to install MetaMask');
       setErrorMessage('Please install MetaMask browser extension to interact');
     }
-    getPlayers();
   }
   // update account, will cause component re-render
   const accountChangedHandler = (newAccount) => {
@@ -89,44 +88,65 @@ function App() {
 
   window.ethereum.on('chainChanged', chainChangedHandler);
 
-
-
-  /* Get player */
-  //==============================================================================
+//--------------------------- Get balance --------------------------------------
 
   const getBalance = async () =>{
     const pot = await lotteryContract.getBalance();
     setPrizePool(parseInt(Object.values(pot)[0], 16));
     console.log("Balance: ", prizePool);
 } 
-  
+
+//---------------------- Buy ticket and pick number ticket ---------------------
+
   const enter = () => {
-    const numTicket = document.getElementById("getNumber").value;
+    let numTicket = document.getElementById("getNumber").value;
+    if (numTicket == "") numTicket = Math.floor(Math.random() * 10) + 1;
     const costTicket = ethers.BigNumber.from("5");
     lotteryContract.enter(numTicket, {value: costTicket});
+    document.getElementById("getNumber").value = "";
   }
  
+//--------------------------- Get amount player one game -----------------------
+
   const getAmountPlayer = async () =>{
     const cntPlayer = await lotteryContract.getAmountPlayer();
     setAmountPlayer(parseInt(Object.values(cntPlayer)[0], 16));
     console.log("Amount Player: ", amountPlayer);
   }
 
+//----------------- Get list player and number ticket of player ----------------
+
   const getPlayers = async () =>{
-    const listPlayers = [];
     const listNumberTicket = [];
+    let menuPlayers = document.getElementById("listPlayer");
+    menuPlayers.innerHTML='';
+    let menuNumberTicket = document.getElementById("listNumTicket");
+    menuNumberTicket.innerHTML='';
     for(let i = 0; i < amountPlayer; i++){
     const player = await lotteryContract.getPlayers(i);
-    listPlayers.push(Object.values(player)[0]);
     const numTicketPlayer = Object.values(player)[1];
-    listNumberTicket.push(parseInt(Object.values(numTicketPlayer)[0], 16));
+
+    // Create list player
+    const newLiPlayer = document.createElement("li");
+    newLiPlayer.className = "li-player short-text";
+    newLiPlayer.innerHTML = Object.values(player)[0];
+    document.getElementById("listPlayer").appendChild(newLiPlayer);
+
+    // Create list number ticket
+    const newLiNumberTicket = document.createElement("li");
+    newLiNumberTicket.className = "li-number-ticket short-text";
+    newLiNumberTicket.innerHTML = parseInt(Object.values(numTicketPlayer)[0], 16);
+    document.getElementById("listNumTicket").appendChild(newLiNumberTicket);
     console.log("Number Ticket: ", parseInt(Object.values(numTicketPlayer)[0], 16));
     }
-    setListPlayerGame(listNumberTicket);
-    console.log("List player: ", listPlayerGame);
   }
 
-  //==============================================================================
+//----------------------------- Pick winner ------------------------------------
+
+
+
+
+//----------------------------------------------------------------------------
 
 
   return (
@@ -145,7 +165,7 @@ function App() {
         <div className="lottery-area">
           <div className="run-lottery">
             <div>
-              Giá vé: 5 wei
+              Giá vé: 5 Wei
         <div className="pay-money">
                 <input type="text" placeholder="Chọn số từ 1->10" id="getNumber" className="get-number" />
                 <button  onClick={enter}className="get-player bt1">
@@ -155,7 +175,7 @@ function App() {
             </div>
             <div className="pot">
               Tổng giải thưởng:
-              <p>{prizePool}</p>
+              <p>{prizePool} tỉ</p>
           </div>
           <button className="bt2">
                   Xổ số
@@ -170,16 +190,18 @@ function App() {
             <p style={{color: 'yellow'}}>Người tham gia:  </p> <p style={{color: 'rgb(65, 212, 176)'}}>{amountPlayer}</p>
           </div>
           <div className="player-title">          
-          <div className="address-player">Địa chỉ
-          {listPlayerGame}
-          </div>
-          <div className="ticket-player">Số
-          {/* {listPlayerGame} */}
-          </div>
-          </div>
-          {/* <div className="list-player">
+          <div className="address-player">&emsp;Địa chỉ người chơi
+          <ul id="listPlayer">               
             
-          </div> */}
+          </ul>
+          </div>
+          <div className="ticket-player">Số đã chọn
+            <ul id="listNumTicket">
+
+            </ul>
+          </div>
+          </div>
+
           </div>
       </div>
     </div>

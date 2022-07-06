@@ -45,7 +45,6 @@ body{
   margin-top: 68px;
 }
 .lottery-area{
-  /* background-color: #4c5058; */
   width: 60%;
   height:auto;
 }
@@ -71,6 +70,11 @@ body{
 .pot{
   height: 30%;
   color: #fff;
+}
+.pot p{
+  font-size: 100px;
+  color: yellow;
+  margin-top: 0;
 }
 .bt1{
   background-color: yellow;
@@ -121,14 +125,16 @@ body{
 .address-player{
   width: 80%;
   height: auto;
+
 }
 .ticket-player{
   width: 20%;
   height: auto;
+  
 }
-/* .list-player{
-  width: 100%;
-  height: auto;
-} */
+ul .li-player{
+  list-style-type: none;
+  width: 33rem !important;
+}
 
 
