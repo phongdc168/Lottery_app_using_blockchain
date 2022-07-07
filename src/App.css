@@ -73,9 +73,10 @@ body{
   color: #fff;
 }
 .pot p{
-  font-size: 100px;
+  font-size: 80px;
   color: yellow;
   margin-top: 0;
+  margin-bottom: 2rem;
 }
 .bt1{
   background-color: yellow;
