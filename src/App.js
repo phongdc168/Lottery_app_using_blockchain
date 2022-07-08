@@ -5,10 +5,10 @@ import lotteryAbi from "./lottery.abi.json"
 import { resolveProperties } from 'ethers/lib/utils';
 import useInterval from './useInterval.js';
 import { dblClick } from '@testing-library/user-event/dist/click';
-import tokenAbi from "./token.abi.json"
 
 function App() {
 
+  var lotteryId = 1;
   //----------------------- Declare variables using State ----------------------
 
   const [errorMessage, setErrorMessage] = useState();
@@ -31,22 +31,19 @@ function App() {
     if (lotteryContract) getBalance();
     if (lotteryContract) getAmountPlayer();
     if (lotteryContract) getPlayers();
+
   }
 
   //------------------------ Connect to contract -------------------------------
 
-  const declareContract =  () =>{
-  let lotteryAddress = "0x1d28BfF108F4AcF1c76bFF9777a1350Ed3635F3b"; // Contract Rinkeby
-  // let lotteryAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Contract Localhost
-
-  let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
-  setProvider(tmpProvider);
-  let tmpSigner = tmpProvider.getSigner();
-  setSigner(tmpSigner);
-  let tmpContract = new ethers.Contract(lotteryAddress, lotteryAbi, tmpSigner);
-  setLotteryContract(tmpContract);
-  let tokenAddress = "0xD9431fd902EAf10E148BB130F56aC40A612b9150";
-
+  const declareContract = () => {
+    let lotteryAddress = "0x1d28BfF108F4AcF1c76bFF9777a1350Ed3635F3b"; // Contract Rinkeby
+    let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
+    setProvider(tmpProvider);
+    let tmpSigner = tmpProvider.getSigner();
+    setSigner(tmpSigner);
+    let tmpContract = new ethers.Contract(lotteryAddress, lotteryAbi, tmpSigner);
+    setLotteryContract(tmpContract);
   }
 
   //--------------------------- Connect wallet ---------------------------------
@@ -83,80 +80,80 @@ function App() {
 
   window.ethereum.on('chainChanged', chainChangedHandler);
 
-//--------------------------- Get balance --------------------------------------
+  //--------------------------- Get balance --------------------------------------
 
-  const getBalance = async () =>{
+  const getBalance = async () => {
     const pot = await lotteryContract.getBalance();
     setPrizePool(parseInt(Object.values(pot)[0], 16));
     console.log("Balance: ", prizePool);
-} 
+  }
 
-//--------------------------- Set cost ticket ----------------------------------
+  //--------------------------- Set cost ticket ----------------------------------
 
-// const setCostTicket = () =>{
-//   lotteryContract.setCostTicket({value:costTicket});
-// }
+  // const setCostTicket = () =>{
+  //   lotteryContract.setCostTicket({value:costTicket});
+  // }
 
-//---------------------- Buy ticket and pick number ticket ---------------------
+  //---------------------- Buy ticket and pick number ticket ---------------------
 
   const enter = () => {
     // setCostTicket();
     let numTicket = document.getElementById("getNumber").value;
     if (numTicket == "") numTicket = Math.floor(Math.random() * 10) + 1;
-    const costTicket = ethers.BigNumber.from("5");
-    lotteryContract.enter(numTicket,{value:costTicket});
+    // const costTicket = ethers.BigNumber.from("5");
+    lotteryContract.enter(numTicket);
     document.getElementById("getNumber").value = "";
   }
- 
-//--------------------------- Get amount player one game -----------------------
 
-  const getAmountPlayer = async () =>{
+  //--------------------------- Get amount player one game -----------------------
+
+  const getAmountPlayer = async () => {
     const cntPlayer = await lotteryContract.getAmountPlayer();
     setAmountPlayer(parseInt(Object.values(cntPlayer)[0], 16));
     console.log("Amount Player: ", amountPlayer);
   }
 
-//----------------- Get list player and number ticket of player ----------------
+  //----------------- Get list player and number ticket of player ----------------
 
-  const getPlayers = async () =>{
+  const getPlayers = async () => {
     const listNumberTicket = [];
 
     // Reset list player
     let menuPlayers = document.getElementById("listPlayer");
-    menuPlayers.innerHTML='';
-    
+    menuPlayers.innerHTML = '';
+
     // Reset list ticket number
     let menuNumberTicket = document.getElementById("listNumTicket");
-    menuNumberTicket.innerHTML='';
-    for(let i = 0; i < amountPlayer; i++){
-    const player = await lotteryContract.getPlayers(i);
-    const numTicketPlayer = Object.values(player)[1];
+    menuNumberTicket.innerHTML = '';
+    for (let i = 0; i < amountPlayer; i++) {
+      const player = await lotteryContract.getPlayers(i);
+      const numTicketPlayer = Object.values(player)[1];
 
-    // Create list player
-    const newLiPlayer = document.createElement("li");
-    newLiPlayer.className = "li-player short-text";
-    newLiPlayer.innerHTML = Object.values(player)[0];
-    document.getElementById("listPlayer").appendChild(newLiPlayer);
+      // Create list player
+      const newLiPlayer = document.createElement("li");
+      newLiPlayer.className = "li-player short-text";
+      newLiPlayer.innerHTML = Object.values(player)[0];
+      document.getElementById("listPlayer").appendChild(newLiPlayer);
 
-    // Create list number ticket
-    const newLiNumberTicket = document.createElement("li");
-    newLiNumberTicket.className = "li-number-ticket short-text";
-    newLiNumberTicket.innerHTML = parseInt(Object.values(numTicketPlayer)[0], 16);
-    document.getElementById("listNumTicket").appendChild(newLiNumberTicket);
-    console.log("Number Ticket: ", parseInt(Object.values(numTicketPlayer)[0], 16));
+      // Create list number ticket
+      const newLiNumberTicket = document.createElement("li");
+      newLiNumberTicket.className = "li-number-ticket short-text";
+      newLiNumberTicket.innerHTML = parseInt(Object.values(numTicketPlayer)[0], 16);
+      document.getElementById("listNumTicket").appendChild(newLiNumberTicket);
+      console.log("Number Ticket: ", parseInt(Object.values(numTicketPlayer)[0], 16));
     }
   }
 
-//----------------------------- Result lottery ---------------------------------
+  //----------------------------- Result lottery ---------------------------------
 
-  const getResultLottery = async () =>{
+  const getResultLottery = async () => {
     const res = await lotteryContract.getLuckyNumber();
     console.log("Result lottery", res);
     setResultLottery(parseInt(Object.values(res)[0], 16));
   }
-//----------------------------- Pick winner ------------------------------------
+  //----------------------------- Pick winner ------------------------------------
 
-  const pickWinner = async () =>{
+  const pickWinner = async () => {
     await lotteryContract._requestRandomWords();
     getResultLottery();
     const amountWinner = await lotteryContract.getAmountWinner();
@@ -167,18 +164,51 @@ function App() {
     // let menuWinner = document.getElementById("listWinner");
     // menuWinner.innerHTML='';
 
-    for(let i = 0; i < amountWinner; i++){
-    const winner = await lotteryContract.getListWinner(i);
+    for (let i = 0; i < amountWinner; i++) {
+      const winner = await lotteryContract.getListWinner(i);
 
-    // Create list winner lottery
-    const newLiWinner = document.createElement("li");
-    newLiWinner.className = "li-winner short-text";
-    newLiWinner.innerHTML = winner;
-    document.getElementById("listWinner").appendChild(newLiWinner);
+      // Create list winner lottery
+      const newLiWinner = document.createElement("li");
+      newLiWinner.className = "li-winner short-text";
+      newLiWinner.innerHTML = winner;
+      document.getElementById("listWinner").appendChild(newLiWinner);
     }
   }
 
-//----------------------------------------------------------------------------
+  //----------------------------- Countdown lottery ---------------------------------
+
+  window.onload = async function start() {
+    var time_in_minutes = 1;
+    var current_time = Date.parse(new Date());
+    var deadline = new Date(current_time + time_in_minutes * 60 * 1000);
+
+    function time_remaining(endtime) {
+      var t = Date.parse(endtime) - Date.parse(new Date());
+      var seconds = Math.floor((t / 1000) % 60);
+      var minutes = Math.floor((t / 1000 / 60) % 60);
+      var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+      var days = Math.floor(t / (1000 * 60 * 60 * 24));
+      return { 'total': t, 'days': days, 'hours': hours, 'minutes': minutes, 'seconds': seconds };
+    }
+    function run_clock(id, endtime) {
+      var clock = document.getElementById(id);
+      function update_clock() {
+        var t = time_remaining(endtime);
+        clock.innerHTML = t.minutes + '  phút' + '<br>' + t.seconds + '  giây';
+        if (t.total <= 0) {
+          pickWinner();
+          
+          clearInterval(timeinterval);
+        }
+      }
+      update_clock(); // run function once at first to avoid delay
+      var timeinterval = setInterval(update_clock, 1000);
+    }
+    run_clock('clockdiv', deadline);
+
+  }
+
+  //-----------------------------------------------------------------------------
 
 
   return (
@@ -186,7 +216,7 @@ function App() {
       <div className="layout-header">
         <div className="navbar-brand">
           LOTTERY APP
-    </div>
+        </div>
         <div className="navbar-end">
           <button onClick={connectWalletHandler} className="connect-wallet short-text">
             {defaultAccount}
@@ -196,48 +226,51 @@ function App() {
       <div className="layout-body">
         <div className="lottery-area">
           <div className="run-lottery">
-            <div>
-              Giá vé: 5 Wei
-        <div className="pay-money">
-                <input type="text" placeholder="Chọn số từ 1->10" id="getNumber" className="get-number" />
-                <button  onClick={enter} className="get-player bt1">
-                  Mua vé
-          </button>
+            <div className="info-lottery">
+
+              <div>
+                Giá vé: 5 Wei
+                <div className="pay-money">
+                  <input type="text" placeholder="Chọn số từ 1->10" id="getNumber" className="get-number" />
+                  <button onClick={enter} className="get-player bt1">
+                    Mua vé
+                  </button>
+                </div>
               </div>
+              <div className="pot">
+                Tổng giải thưởng:
+                <p>{prizePool} tỉ</p>
+              </div>
+              <p id="headline">Kết thúc đợt {lotteryId} trong:</p>
+              <div id="clockdiv"></div>
             </div>
-            <div className="pot">
-              Tổng giải thưởng:
-              <p>{prizePool} tỉ</p>
-          </div>
-          <button onClick={pickWinner} className="bt2">
-                  Xổ số
-          </button>
           </div>
           <div className="result-lottery">
-          <p>Kết quả đợt:<br/> 
-              Số may mắn: {resultLottery}<br/>
+          <ul id="listWinner">
+            <p>Kết quả đợt {lotteryId}:<br />
+              Số may mắn: {resultLottery}<br />
               Danh sách chiến thắng: {amountWinner} người</p>
-            <ul id="listWinner"></ul>
-            </div>
+           </ul>
+          </div>
         </div>
         <div className="participants">
           <div className="amount-players">
-            <p style={{color: 'yellow'}}>Người tham gia:  </p> <p style={{color: 'rgb(65, 212, 176)'}}>{amountPlayer}</p>
+            <p style={{ color: 'yellow' }}>Người tham gia:  </p> <p style={{ color: 'rgb(65, 212, 176)' }}>{amountPlayer}</p>
           </div>
-          <div className="player-title">          
-          <div className="address-player">&emsp;Địa chỉ người chơi
-          <ul id="listPlayer">               
-            
-          </ul>
-          </div>
-          <div className="ticket-player">Số đã chọn
-            <ul id="listNumTicket">
+          <div className="player-title">
+            <div className="address-player">&emsp;Địa chỉ người chơi
+              <ul id="listPlayer">
 
-            </ul>
-          </div>
+              </ul>
+            </div>
+            <div className="ticket-player">Số đã chọn
+              <ul id="listNumTicket">
+
+              </ul>
+            </div>
           </div>
 
-          </div>
+        </div>
       </div>
     </div>
   );

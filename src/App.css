@@ -2,6 +2,7 @@ body{
   margin:0;
   background-color: rgb(48, 43, 43);
   font-family: Helvetica;
+  height: 100%;
 }
 .main{
   min-height: 100vh;
@@ -67,6 +68,9 @@ body{
   border-radius: 5px;
   border: 1px solid black;
   margin-right: 0;
+}
+.info-lottery{
+  margin-left: 1rem;
 }
 .pot{
   height: 30%;

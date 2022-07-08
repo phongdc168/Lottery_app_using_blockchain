@@ -62,7 +62,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
 
 
     function getBalance() public view returns (uint) {
-        return address(this).balance;
+        return prizePool;
     }
 
     function getPlayers(uint _index) public view returns (address payable, uint) {
@@ -128,7 +128,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         require(address(this).balance !=0, "prizePool is empty");
         require(lenWinner != 0, "No winner");
         for(uint256 i = 0; i < lenWinner; i++){
-            _transferPrize(winnerPrize * (10**18), groupTicket[luckyNumber].groupPlayer[i]);
+            _transferPrize(winnerPrize , groupTicket[luckyNumber].groupPlayer[i]);
            
         }
         // _reset();
@@ -136,9 +136,8 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     
     function _transferPrize(uint256 _winnerPrize, address payable winner) private{
         prizePool -= _winnerPrize;
-        // winner.transfer(_winnerPrize);
-        token.setApproval(address(this), winner, _winnerPrize);
-        token.transfer(winner, _winnerPrize);
+        token.setApproval(address(this), winner, _winnerPrize * (10**18));
+        token.transfer(winner, _winnerPrize * (10**18));
     }
 
     function getAmountWinner() public view returns(uint256){
