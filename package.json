@@ -21,8 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deployContract": "npx hardhat run scripts/deployContract.js --network rinkeby",
-    "deployToken": "npx hardhat run scripts/deployToken.js --network rinkeby"
+    "deploy": "npx hardhat run scripts/deploy.js --network rinkeby"
   },
   "eslintConfig": {
     "extends": [

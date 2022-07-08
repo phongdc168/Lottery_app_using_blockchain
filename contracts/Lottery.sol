@@ -12,6 +12,11 @@ import "./MyToken.sol";
 contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab) {
     VRFCoordinatorV2Interface constant COORDINATOR = 
     VRFCoordinatorV2Interface(0x6168499c0cFfCaCD319c818142124B7A15E857ab);
+    address public admin;
+    MyToken public token;
+ constructor(MyToken _token) public{
+     token = _token;
+ }
 
     //------------------------------ Declare variable -------------------------------------
 
@@ -50,8 +55,8 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     uint256 prizePool;
     uint256 public luckyNumber;
     uint256 numTicketPlayer;
-    uint256 public costTicket;
-    MyToken public token;
+    uint256 public costTicket = 5 * (10**18);
+    // MyToken public token;
 
     //--------------------------------------------------------------------------------------
 
@@ -70,10 +75,6 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     
     function getAmountPlayer() public view returns (uint){
         return playerCount;
-    }
-
-    function setCostTicket() public payable{
-        costTicket = msg.value;
     }
 
     function enter(uint256 numTicket) public payable {
@@ -127,7 +128,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         require(address(this).balance !=0, "prizePool is empty");
         require(lenWinner != 0, "No winner");
         for(uint256 i = 0; i < lenWinner; i++){
-            _transferPrize(winnerPrize, groupTicket[luckyNumber].groupPlayer[i]);
+            _transferPrize(winnerPrize * (10**18), groupTicket[luckyNumber].groupPlayer[i]);
            
         }
         // _reset();

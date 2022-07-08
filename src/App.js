@@ -36,7 +36,7 @@ function App() {
   //------------------------ Connect to contract -------------------------------
 
   const declareContract =  () =>{
-  let lotteryAddress = "0x7f65763a6C70f1E2d8725d13f2eE5A6c83bdee6b"; // Contract Rinkeby
+  let lotteryAddress = "0x1d28BfF108F4AcF1c76bFF9777a1350Ed3635F3b"; // Contract Rinkeby
   // let lotteryAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Contract Localhost
 
   let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
@@ -45,7 +45,7 @@ function App() {
   setSigner(tmpSigner);
   let tmpContract = new ethers.Contract(lotteryAddress, lotteryAbi, tmpSigner);
   setLotteryContract(tmpContract);
-  let tokenAddress = "0x4c025c37D34b99D47f5D7cc18439b198c5307C1c";
+  let tokenAddress = "0xD9431fd902EAf10E148BB130F56aC40A612b9150";
 
   }
 
@@ -93,18 +93,18 @@ function App() {
 
 //--------------------------- Set cost ticket ----------------------------------
 
-const setCostTicket = () =>{
-  const costTicket = ethers.BigNumber.from("5");
-  lotteryContract.setCostTicket({value:costTicket});
-}
+// const setCostTicket = () =>{
+//   lotteryContract.setCostTicket({value:costTicket});
+// }
 
 //---------------------- Buy ticket and pick number ticket ---------------------
 
   const enter = () => {
-    setCostTicket();
+    // setCostTicket();
     let numTicket = document.getElementById("getNumber").value;
     if (numTicket == "") numTicket = Math.floor(Math.random() * 10) + 1;
-    lotteryContract.enter(numTicket);
+    const costTicket = ethers.BigNumber.from("5");
+    lotteryContract.enter(numTicket,{value:costTicket});
     document.getElementById("getNumber").value = "";
   }
  
@@ -120,8 +120,12 @@ const setCostTicket = () =>{
 
   const getPlayers = async () =>{
     const listNumberTicket = [];
+
+    // Reset list player
     let menuPlayers = document.getElementById("listPlayer");
     menuPlayers.innerHTML='';
+    
+    // Reset list ticket number
     let menuNumberTicket = document.getElementById("listNumTicket");
     menuNumberTicket.innerHTML='';
     for(let i = 0; i < amountPlayer; i++){
@@ -158,8 +162,10 @@ const setCostTicket = () =>{
     const amountWinner = await lotteryContract.getAmountWinner();
     console.log("Amount Winner: ", amountWinner);
     setAmountWinner(parseInt(Object.values(amountWinner)[0], 16));
-    let menuWinner = document.getElementById("listWinner");
-    menuWinner.innerHTML='';
+
+    // Reset list winner
+    // let menuWinner = document.getElementById("listWinner");
+    // menuWinner.innerHTML='';
 
     for(let i = 0; i < amountWinner; i++){
     const winner = await lotteryContract.getListWinner(i);
