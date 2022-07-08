@@ -5,6 +5,7 @@ import lotteryAbi from "./lottery.abi.json"
 import { resolveProperties } from 'ethers/lib/utils';
 import useInterval from './useInterval.js';
 import { dblClick } from '@testing-library/user-event/dist/click';
+import tokenAbi from "./token.abi.json"
 
 function App() {
 
@@ -35,7 +36,7 @@ function App() {
   //------------------------ Connect to contract -------------------------------
 
   const declareContract =  () =>{
-  let lotteryAddress = "0xA8F41C49ca3657b0C86998681d73d2cb8A599D9b"; // Contract Rinkeby
+  let lotteryAddress = "0x7f65763a6C70f1E2d8725d13f2eE5A6c83bdee6b"; // Contract Rinkeby
   // let lotteryAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // Contract Localhost
 
   let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
@@ -44,6 +45,8 @@ function App() {
   setSigner(tmpSigner);
   let tmpContract = new ethers.Contract(lotteryAddress, lotteryAbi, tmpSigner);
   setLotteryContract(tmpContract);
+  let tokenAddress = "0x4c025c37D34b99D47f5D7cc18439b198c5307C1c";
+
   }
 
   //--------------------------- Connect wallet ---------------------------------
@@ -88,13 +91,20 @@ function App() {
     console.log("Balance: ", prizePool);
 } 
 
+//--------------------------- Set cost ticket ----------------------------------
+
+const setCostTicket = () =>{
+  const costTicket = ethers.BigNumber.from("5");
+  lotteryContract.setCostTicket({value:costTicket});
+}
+
 //---------------------- Buy ticket and pick number ticket ---------------------
 
   const enter = () => {
+    setCostTicket();
     let numTicket = document.getElementById("getNumber").value;
     if (numTicket == "") numTicket = Math.floor(Math.random() * 10) + 1;
-    const costTicket = ethers.BigNumber.from("5");
-    lotteryContract.enter(numTicket, {value: costTicket});
+    lotteryContract.enter(numTicket);
     document.getElementById("getNumber").value = "";
   }
  

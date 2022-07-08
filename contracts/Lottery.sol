@@ -6,7 +6,7 @@ import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "./extensions/IERC20.sol";
+import "./MyToken.sol";
 
     // Rinkeby coordinator: 0x6168499c0cFfCaCD319c818142124B7A15E857ab
 contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab) {
@@ -50,7 +50,8 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     uint256 prizePool;
     uint256 public luckyNumber;
     uint256 numTicketPlayer;
-    IERC20 public token;
+    uint256 public costTicket;
+    MyToken public token;
 
     //--------------------------------------------------------------------------------------
 
@@ -71,10 +72,15 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         return playerCount;
     }
 
+    function setCostTicket() public payable{
+        costTicket = msg.value;
+    }
+
     function enter(uint256 numTicket) public payable {
-        require(msg.value > 2, "Not enough token");
+        require(costTicket >= 5, "Not enough token");
         require(numTicket >= 0 && numTicket <= 10, "Number ticket out of range");
-        // token.transferFrom(msg.sender, address(this), 2);
+        token.setApproval(msg.sender, address(this), costTicket);
+        token.transferFrom(msg.sender, address(this), costTicket);
         prizePool += msg.value;
         Participants storage newPlayer = allLottery[playerCount];
         newPlayer.player = payable(msg.sender);
@@ -124,12 +130,14 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
             _transferPrize(winnerPrize, groupTicket[luckyNumber].groupPlayer[i]);
            
         }
-        _reset();
+        // _reset();
     }
     
     function _transferPrize(uint256 _winnerPrize, address payable winner) private{
         prizePool -= _winnerPrize;
-        winner.transfer(_winnerPrize);
+        // winner.transfer(_winnerPrize);
+        token.setApproval(address(this), winner, _winnerPrize);
+        token.transfer(winner, _winnerPrize);
     }
 
     function getAmountWinner() public view returns(uint256){
