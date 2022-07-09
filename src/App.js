@@ -5,6 +5,7 @@ import lotteryAbi from "./lottery.abi.json"
 import { resolveProperties } from 'ethers/lib/utils';
 import useInterval from './useInterval.js';
 import { dblClick } from '@testing-library/user-event/dist/click';
+import { getAllByDisplayValue } from '@testing-library/dom';
 
 function App() {
 
@@ -37,7 +38,8 @@ function App() {
   //------------------------ Connect to contract -------------------------------
 
   const declareContract = () => {
-    let lotteryAddress = "0x1d28BfF108F4AcF1c76bFF9777a1350Ed3635F3b"; // Contract Rinkeby
+    // let lotteryAddress = "0x1d28BfF108F4AcF1c76bFF9777a1350Ed3635F3b"; // Contract Rinkeby
+    let lotteryAddress = "0x790a36Cd2128Ecdd7d0fd91612213B16ad4f9739"; // Contract Rinkeby
     let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
     setProvider(tmpProvider);
     let tmpSigner = tmpProvider.getSigner();
@@ -143,7 +145,9 @@ function App() {
       console.log("Number Ticket: ", parseInt(Object.values(numTicketPlayer)[0], 16));
     }
   }
-
+  const resetLottery = async() =>{
+    await lotteryContract._reset();
+  }
   //----------------------------- Result lottery ---------------------------------
 
   const getResultLottery = async () => {
@@ -196,7 +200,7 @@ function App() {
         var t = time_remaining(endtime);
         clock.innerHTML = t.minutes + '  phút' + '<br>' + t.seconds + '  giây';
         if (t.total <= 0) {
-          pickWinner();
+          // pickWinner();
           
           clearInterval(timeinterval);
         }
@@ -215,7 +219,7 @@ function App() {
     <div className="main">
       <div className="layout-header">
         <div className="navbar-brand">
-          LOTTERY APP
+        &emsp;LOTTERY APP
         </div>
         <div className="navbar-end">
           <button onClick={connectWalletHandler} className="connect-wallet short-text">
@@ -226,10 +230,9 @@ function App() {
       <div className="layout-body">
         <div className="lottery-area">
           <div className="run-lottery">
-            <div className="info-lottery">
-
+            {/* <div className="info-lottery"> */}
               <div>
-                Giá vé: 5 Wei
+                Giá vé: 5 Token MTK
                 <div className="pay-money">
                   <input type="text" placeholder="Chọn số từ 1->10" id="getNumber" className="get-number" />
                   <button onClick={enter} className="get-player bt1">
@@ -238,12 +241,21 @@ function App() {
                 </div>
               </div>
               <div className="pot">
+                <div className="prize-pool">
                 Tổng giải thưởng:
-                <p>{prizePool} tỉ</p>
-              </div>
-              <p id="headline">Kết thúc đợt {lotteryId} trong:</p>
+                <br/>
+                <span style={{ color: 'rgb(64, 101, 224)', fontSize:80}}>{prizePool} tỉ</span>
+                </div>
+                <div className="countdown">
+                <span id="headline">Kết thúc đợt {lotteryId} trong:</span>             
               <div id="clockdiv"></div>
-            </div>
+              </div>
+              </div>
+            
+            <button className="bt2" onClick={pickWinner}>Xổ số</button>
+            <button className="bt2" onClick={resetLottery}>Reset</button>
+
+            {/* </div> */}
           </div>
           <div className="result-lottery">
           <ul id="listWinner">
@@ -255,7 +267,7 @@ function App() {
         </div>
         <div className="participants">
           <div className="amount-players">
-            <p style={{ color: 'yellow' }}>Người tham gia:  </p> <p style={{ color: 'rgb(65, 212, 176)' }}>{amountPlayer}</p>
+            <p style={{ color: 'rgb(240, 240, 84)' }}>Người tham gia:  </p> <p style={{ color: 'rgb(98, 132, 245)' }}>{amountPlayer}</p>
           </div>
           <div className="player-title">
             <div className="address-player">&emsp;Địa chỉ người chơi

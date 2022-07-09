@@ -35,6 +35,13 @@
   },
   {
     "inputs": [],
+    "name": "_reset",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "admin",
     "outputs": [
       {

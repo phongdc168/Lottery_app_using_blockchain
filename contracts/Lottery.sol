@@ -21,7 +21,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     //------------------------------ Declare variable -------------------------------------
 
     // Your subscription ID.
-     uint64 constant s_subscriptionId = 7370;
+     uint64 constant s_subscriptionId = 7130;
 
     // The gas lane to use, which specifies the maximum gas price to bump to.
     bytes32 constant keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
@@ -82,7 +82,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         require(numTicket >= 0 && numTicket <= 10, "Number ticket out of range");
         token.setApproval(msg.sender, address(this), costTicket);
         token.transferFrom(msg.sender, address(this), costTicket);
-        prizePool += msg.value;
+        prizePool += costTicket / (10**18);
         Participants storage newPlayer = allLottery[playerCount];
         newPlayer.player = payable(msg.sender);
         newPlayer.numTicket = numTicket;
@@ -125,7 +125,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     function closeLottery() private {
         uint256 lenWinner = groupTicket[luckyNumber].groupPlayer.length;
         uint256 winnerPrize = prizePool / lenWinner;
-        require(address(this).balance !=0, "prizePool is empty");
+        require(prizePool !=0, "prizePool is empty");
         require(lenWinner != 0, "No winner");
         for(uint256 i = 0; i < lenWinner; i++){
             _transferPrize(winnerPrize , groupTicket[luckyNumber].groupPlayer[i]);
@@ -154,7 +154,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
 
     //------------------------------------- Reset lottery ------------------------------------
 
-    function _reset() private{
+    function _reset() public{
         for(uint256 i = 0;i < playerCount; i++){
             delete allLottery[i];
         }
