@@ -14,7 +14,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     VRFCoordinatorV2Interface(0x6168499c0cFfCaCD319c818142124B7A15E857ab);
     address public admin;
     MyToken public token;
- constructor(MyToken _token) public{
+ function initialize(MyToken _token) external{
      token = _token;
  }
 
@@ -56,8 +56,17 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     uint256 public luckyNumber;
     uint256 numTicketPlayer;
     uint256 public costTicket = 5 * (10**18);
-    // MyToken public token;
-
+    uint256 public startAt = 1;
+    uint256 public endAt = 10;
+     function setStartAt(uint256 _startAt) public{
+        startAt = _startAt;
+    }
+        function setEndAt( uint256 _endAt) public{
+        endAt = _endAt;
+    }
+        function setCostTicket(uint256 _costTicket) public{
+        costTicket = _costTicket;
+    }
     //--------------------------------------------------------------------------------------
 
 
@@ -79,7 +88,8 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
 
     function enter(uint256 numTicket) public payable {
         require(costTicket >= 5, "Not enough token");
-        require(numTicket >= 0 && numTicket <= 10, "Number ticket out of range");
+        require(startAt < endAt, "Require startAt less than endAt");
+        require(numTicket >= startAt && numTicket <= endAt, "Number ticket out of range");
         token.setApproval(msg.sender, address(this), costTicket);
         token.transferFrom(msg.sender, address(this), costTicket);
         prizePool += costTicket / (10**18);
@@ -160,6 +170,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         }
         playerCount = 0;
         luckyNumber = 0;
+        prizePool = 0;
     }
 
     //------------------------------------------------------------------------------------------

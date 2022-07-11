@@ -10,6 +10,7 @@ import { getAllByDisplayValue } from '@testing-library/dom';
 function App() {
 
   var lotteryId = 1;
+  
   //----------------------- Declare variables using State ----------------------
 
   const [errorMessage, setErrorMessage] = useState();
@@ -32,9 +33,43 @@ function App() {
     if (lotteryContract) getBalance();
     if (lotteryContract) getAmountPlayer();
     if (lotteryContract) getPlayers();
-
+    if (lotteryContract) getResultLottery();
+    if (lotteryContract) getAmountWinner();
+    if (lotteryContract) getListWinner();
   }
 
+  //----------------------------- Countdown lottery ---------------------------------
+
+  window.onload = function start() {
+    var time_in_minutes = 1;
+    var current_time = Date.parse(new Date());
+    var deadline = new Date(current_time + time_in_minutes * 60 * 1000);
+
+    function time_remaining(endtime) {
+      var t = Date.parse(endtime) - Date.parse(new Date());
+      var seconds = Math.floor((t / 1000) % 60);
+      var minutes = Math.floor((t / 1000 / 60) % 60);
+      var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+      var days = Math.floor(t / (1000 * 60 * 60 * 24));
+      return { 'total': t, 'days': days, 'hours': hours, 'minutes': minutes, 'seconds': seconds };
+    }
+    function run_clock(id, endtime) {
+      var clock = document.getElementById(id);
+      function update_clock() {
+        var t = time_remaining(endtime);
+        clock.innerHTML = t.minutes + '  phút' + '<br>' + t.seconds + '  giây';
+        if (t.total <= 0) {
+          // pickWinner();
+          
+          clearInterval(timeinterval);
+        }
+      }
+      update_clock(); // run function once at first to avoid delay
+      var timeinterval = setInterval(update_clock, 1000);
+    }
+    run_clock('clockdiv', deadline);
+
+  }
   //------------------------ Connect to contract -------------------------------
 
   const declareContract = () => {
@@ -51,7 +86,8 @@ function App() {
   //--------------------------- Connect wallet ---------------------------------
 
   const connectWalletHandler = () => {
-    declareContract();
+  setInterval(declareContract, 8000);
+    
     if (window.ethereum && window.ethereum.isMetaMask) {
       console.log('MetaMask Here!');
 
@@ -90,12 +126,6 @@ function App() {
     console.log("Balance: ", prizePool);
   }
 
-  //--------------------------- Set cost ticket ----------------------------------
-
-  // const setCostTicket = () =>{
-  //   lotteryContract.setCostTicket({value:costTicket});
-  // }
-
   //---------------------- Buy ticket and pick number ticket ---------------------
 
   const enter = () => {
@@ -112,7 +142,7 @@ function App() {
   const getAmountPlayer = async () => {
     const cntPlayer = await lotteryContract.getAmountPlayer();
     setAmountPlayer(parseInt(Object.values(cntPlayer)[0], 16));
-    console.log("Amount Player: ", amountPlayer);
+    console.log("Amount Player: ", parseInt(Object.values(cntPlayer)[0], 16));
   }
 
   //----------------- Get list player and number ticket of player ----------------
@@ -145,32 +175,38 @@ function App() {
       console.log("Number Ticket: ", parseInt(Object.values(numTicketPlayer)[0], 16));
     }
   }
+
+  //----------------------------- Reset lottery --------------------------------
+
   const resetLottery = async() =>{
     await lotteryContract._reset();
   }
-  //----------------------------- Result lottery ---------------------------------
+
+  //----------------------------- Result lottery -------------------------------
 
   const getResultLottery = async () => {
     const res = await lotteryContract.getLuckyNumber();
-    console.log("Result lottery", res);
+    console.log("Result lottery", parseInt(Object.values(res)[0], 16));
     setResultLottery(parseInt(Object.values(res)[0], 16));
   }
-  //----------------------------- Pick winner ------------------------------------
 
-  const pickWinner = async () => {
-    await lotteryContract._requestRandomWords();
-    getResultLottery();
+  //----------------------------- Get amount winner one game -------------------
+  
+  const getAmountWinner = async() =>{
     const amountWinner = await lotteryContract.getAmountWinner();
-    console.log("Amount Winner: ", amountWinner);
+    console.log("Amount Winner: ", parseInt(Object.values(amountWinner)[0], 16));
     setAmountWinner(parseInt(Object.values(amountWinner)[0], 16));
+  }
+  //----------------------------- Get list winner ------------------------------------
 
+  const getListWinner = async () => {
     // Reset list winner
-    // let menuWinner = document.getElementById("listWinner");
-    // menuWinner.innerHTML='';
+    let menuWinner = document.getElementById("listWinner");
+    menuWinner.innerHTML='';
 
     for (let i = 0; i < amountWinner; i++) {
       const winner = await lotteryContract.getListWinner(i);
-
+      
       // Create list winner lottery
       const newLiWinner = document.createElement("li");
       newLiWinner.className = "li-winner short-text";
@@ -179,41 +215,16 @@ function App() {
     }
   }
 
-  //----------------------------- Countdown lottery ---------------------------------
+  //----------------------------- Pick winner ------------------------------------
 
-  window.onload = async function start() {
-    var time_in_minutes = 1;
-    var current_time = Date.parse(new Date());
-    var deadline = new Date(current_time + time_in_minutes * 60 * 1000);
-
-    function time_remaining(endtime) {
-      var t = Date.parse(endtime) - Date.parse(new Date());
-      var seconds = Math.floor((t / 1000) % 60);
-      var minutes = Math.floor((t / 1000 / 60) % 60);
-      var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-      var days = Math.floor(t / (1000 * 60 * 60 * 24));
-      return { 'total': t, 'days': days, 'hours': hours, 'minutes': minutes, 'seconds': seconds };
-    }
-    function run_clock(id, endtime) {
-      var clock = document.getElementById(id);
-      function update_clock() {
-        var t = time_remaining(endtime);
-        clock.innerHTML = t.minutes + '  phút' + '<br>' + t.seconds + '  giây';
-        if (t.total <= 0) {
-          // pickWinner();
-          
-          clearInterval(timeinterval);
-        }
-      }
-      update_clock(); // run function once at first to avoid delay
-      var timeinterval = setInterval(update_clock, 1000);
-    }
-    run_clock('clockdiv', deadline);
-
+  const pickWinner = async () => {
+    await lotteryContract._requestRandomWords();
+    getResultLottery();
+    getListWinner();
   }
+  console.log("LotteryId", lotteryId);
 
   //-----------------------------------------------------------------------------
-
 
   return (
     <div className="main">
@@ -258,10 +269,12 @@ function App() {
             {/* </div> */}
           </div>
           <div className="result-lottery">
+            <h2>Kết quả:</h2>
           <ul id="listWinner">
             <p>Kết quả đợt {lotteryId}:<br />
               Số may mắn: {resultLottery}<br />
               Danh sách chiến thắng: {amountWinner} người</p>
+              
            </ul>
           </div>
         </div>
@@ -286,6 +299,7 @@ function App() {
       </div>
     </div>
   );
+
 }
 
 export default App;

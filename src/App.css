@@ -114,11 +114,11 @@ body{
 .bt2{
   background-color: rgb(98, 132, 245);
   font-weight: 800;
-  height: 50px;
-  width: 200px;
+  padding: 0.7rem 2.2rem;
   font-size: calc(5px + 2vmin);
   border-radius: 10px;
-  border: 2px solid white;
+  border: 2px solid transparent;
+  color: #fff;
   cursor: pointer;
 }
 .result-lottery{
@@ -160,6 +160,9 @@ body{
 }
 ul .li-player{
   list-style-type: none;
+}
+ul .li-number-ticket{
+  width: 25px;
 }
 
 
