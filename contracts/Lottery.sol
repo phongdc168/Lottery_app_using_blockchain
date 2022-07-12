@@ -7,6 +7,7 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./MyToken.sol";
+import "./utils/ReentrancyGuardUpgradable.sol";
 
     // Rinkeby coordinator: 0x6168499c0cFfCaCD319c818142124B7A15E857ab
 contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab) {
@@ -14,9 +15,12 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     VRFCoordinatorV2Interface(0x6168499c0cFfCaCD319c818142124B7A15E857ab);
     address public admin;
     MyToken public token;
- function initialize(MyToken _token) external{
-     token = _token;
- }
+//  function initialize(MyToken _token) external{
+//      token = _token;
+//  }
+constructor(MyToken _token) public{
+    token = _token;
+}
 
     //------------------------------ Declare variable -------------------------------------
 
@@ -65,7 +69,7 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
         endAt = _endAt;
     }
         function setCostTicket(uint256 _costTicket) public{
-        costTicket = _costTicket;
+        costTicket = _costTicket * (10**18);
     }
     //--------------------------------------------------------------------------------------
 
@@ -167,6 +171,9 @@ contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab
     function _reset() public{
         for(uint256 i = 0;i < playerCount; i++){
             delete allLottery[i];
+        }
+        for(uint256 i = 0;i < playerCount; i++){
+            delete groupTicket[i];
         }
         playerCount = 0;
         luckyNumber = 0;

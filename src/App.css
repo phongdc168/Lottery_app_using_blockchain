@@ -131,6 +131,10 @@ body{
   margin-left: 1rem;
   margin-top: 1rem;
 }
+.result-lottery h2{
+  margin-bottom: 0;
+  color: var(--btn-color);
+}
 .participants{
   height: auto;
   width: 39%;
@@ -162,7 +166,7 @@ ul .li-player{
   list-style-type: none;
 }
 ul .li-number-ticket{
-  width: 25px;
+  width: 45px;
 }
 
 

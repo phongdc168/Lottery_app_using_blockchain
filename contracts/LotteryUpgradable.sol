@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 
 pragma solidity ^0.8.11;
-contract LotteryUpgradeable{
+contract LotteryUpgradable{
      uint256 public startAt;
     uint256 public endAt;
     uint256 public costTicket;

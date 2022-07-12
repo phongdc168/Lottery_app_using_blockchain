@@ -1,16 +1,11 @@
 import './App.css'
-import { useEffect, useState } from 'react'
+import { startTransition, useEffect, useState } from 'react'
 import { Contract, ethers } from 'ethers'
 import lotteryAbi from "./lottery.abi.json"
-import { resolveProperties } from 'ethers/lib/utils';
-import useInterval from './useInterval.js';
-import { dblClick } from '@testing-library/user-event/dist/click';
-import { getAllByDisplayValue } from '@testing-library/dom';
+import { use } from 'chai';
 
 function App() {
 
-  var lotteryId = 1;
-  
   //----------------------- Declare variables using State ----------------------
 
   const [errorMessage, setErrorMessage] = useState();
@@ -20,28 +15,33 @@ function App() {
   const [signer, setSigner] = useState();
   const [prizePool, setPrizePool] = useState('0');
   const [amountPlayer, setAmountPlayer] = useState('0');
-  const [resultLottery, setResultLottery] = useState('0');
+  const [resultLottery, setResultLottery] = useState();
   const [amountWinner, setAmountWinner] = useState('0')
+  const [fetchData, setFetchData] = useState('0');
+  const [statusCountDown, setStatusCountDown] = useState('0');
 
   //----------------------------- Update State ---------------------------------
 
   useEffect(() => {
-    updateState()
-  }, [lotteryContract])
+    updateState();
+  }, [fetchData])
 
   const updateState = () => {
-    if (lotteryContract) getBalance();
-    if (lotteryContract) getAmountPlayer();
-    if (lotteryContract) getPlayers();
-    if (lotteryContract) getResultLottery();
-    if (lotteryContract) getAmountWinner();
-    if (lotteryContract) getListWinner();
+    if (fetchData) getBalance();
+    if (fetchData) getAmountPlayer();
+    if (fetchData) getPlayers();
+    if (fetchData) getResultLottery();
+    if (fetchData) getAmountWinner();
+    if (fetchData) getListWinner();
   }
 
+  useEffect(() => {
+    updateState();
+  }, [lotteryContract])
   //----------------------------- Countdown lottery ---------------------------------
 
-  window.onload = function start() {
-    var time_in_minutes = 1;
+  function start() {
+    var time_in_minutes = 2.5;
     var current_time = Date.parse(new Date());
     var deadline = new Date(current_time + time_in_minutes * 60 * 1000);
 
@@ -58,9 +58,13 @@ function App() {
       function update_clock() {
         var t = time_remaining(endtime);
         clock.innerHTML = t.minutes + '  phút' + '<br>' + t.seconds + '  giây';
-        if (t.total <= 0) {
-          // pickWinner();
-          
+        if (t.seconds % 5 == 0) {
+          setFetchData(parseInt(t.seconds));
+        }
+        if (t.minutes === 0 && t.seconds === 0) {
+          document.getElementById("btnBuyTicket").disabled = true;
+          pickWinner();
+          alert("End time");
           clearInterval(timeinterval);
         }
       }
@@ -74,20 +78,20 @@ function App() {
 
   const declareContract = () => {
     // let lotteryAddress = "0x1d28BfF108F4AcF1c76bFF9777a1350Ed3635F3b"; // Contract Rinkeby
-    let lotteryAddress = "0x790a36Cd2128Ecdd7d0fd91612213B16ad4f9739"; // Contract Rinkeby
+    let lotteryAddress = "0xdAB6434e5aE2C696Dbdd3Ba06F4C642984C712f5"; // Contract Rinkeby
     let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
     setProvider(tmpProvider);
     let tmpSigner = tmpProvider.getSigner();
     setSigner(tmpSigner);
     let tmpContract = new ethers.Contract(lotteryAddress, lotteryAbi, tmpSigner);
+
     setLotteryContract(tmpContract);
   }
 
   //--------------------------- Connect wallet ---------------------------------
 
   const connectWalletHandler = () => {
-  setInterval(declareContract, 8000);
-    
+    declareContract();
     if (window.ethereum && window.ethereum.isMetaMask) {
       console.log('MetaMask Here!');
 
@@ -99,11 +103,11 @@ function App() {
           setErrorMessage(error.message);
 
         });
-
     } else {
       console.log('Need to install MetaMask');
       setErrorMessage('Please install MetaMask browser extension to interact');
     }
+
   }
   // update account, will cause component re-render
   const accountChangedHandler = (newAccount) => {
@@ -111,7 +115,7 @@ function App() {
   }
   const chainChangedHandler = () => {
     // reload the page to avoid any errors with chain change mid use of application
-    window.location.reload();
+    // window.location.reload();
   }
   // listen for account changes
   window.ethereum.on('accountsChanged', accountChangedHandler);
@@ -128,14 +132,20 @@ function App() {
 
   //---------------------- Buy ticket and pick number ticket ---------------------
 
+  console.log("Status Countdown: ", statusCountDown);
   const enter = () => {
-    // setCostTicket();
     let numTicket = document.getElementById("getNumber").value;
     if (numTicket == "") numTicket = Math.floor(Math.random() * 10) + 1;
     // const costTicket = ethers.BigNumber.from("5");
     lotteryContract.enter(numTicket);
     document.getElementById("getNumber").value = "";
+    if (statusCountDown == 0) {
+      setStatusCountDown(1)
+      start();
+    }
+
   }
+  console.log("Status Countdown 2: ", statusCountDown);
 
   //--------------------------- Get amount player one game -----------------------
 
@@ -178,8 +188,10 @@ function App() {
 
   //----------------------------- Reset lottery --------------------------------
 
-  const resetLottery = async() =>{
+  const resetLottery = async () => {
     await lotteryContract._reset();
+    document.getElementById("btnBuyTicket").disabled = false;
+    setStatusCountDown(0);
   }
 
   //----------------------------- Result lottery -------------------------------
@@ -191,8 +203,8 @@ function App() {
   }
 
   //----------------------------- Get amount winner one game -------------------
-  
-  const getAmountWinner = async() =>{
+
+  const getAmountWinner = async () => {
     const amountWinner = await lotteryContract.getAmountWinner();
     console.log("Amount Winner: ", parseInt(Object.values(amountWinner)[0], 16));
     setAmountWinner(parseInt(Object.values(amountWinner)[0], 16));
@@ -202,15 +214,16 @@ function App() {
   const getListWinner = async () => {
     // Reset list winner
     let menuWinner = document.getElementById("listWinner");
-    menuWinner.innerHTML='';
+    menuWinner.innerHTML = '';
 
     for (let i = 0; i < amountWinner; i++) {
       const winner = await lotteryContract.getListWinner(i);
-      
+
       // Create list winner lottery
       const newLiWinner = document.createElement("li");
       newLiWinner.className = "li-winner short-text";
       newLiWinner.innerHTML = winner;
+
       document.getElementById("listWinner").appendChild(newLiWinner);
     }
   }
@@ -222,7 +235,6 @@ function App() {
     getResultLottery();
     getListWinner();
   }
-  console.log("LotteryId", lotteryId);
 
   //-----------------------------------------------------------------------------
 
@@ -230,10 +242,10 @@ function App() {
     <div className="main">
       <div className="layout-header">
         <div className="navbar-brand">
-        &emsp;LOTTERY APP
+          &emsp;LOTTERY APP
         </div>
         <div className="navbar-end">
-          <button onClick={connectWalletHandler} className="connect-wallet short-text">
+          <button onClick={connectWalletHandler} className="connect-wallet short-text" id="btnConnectWallet">
             {defaultAccount}
           </button>
         </div>
@@ -242,40 +254,39 @@ function App() {
         <div className="lottery-area">
           <div className="run-lottery">
             {/* <div className="info-lottery"> */}
-              <div>
-                Giá vé: 5 Token MTK
+            <div>
+              Giá vé: 5 Token MTK
                 <div className="pay-money">
-                  <input type="text" placeholder="Chọn số từ 1->10" id="getNumber" className="get-number" />
-                  <button onClick={enter} className="get-player bt1">
-                    Mua vé
+                <input type="text" placeholder="Chọn số từ 1->10" id="getNumber" className="get-number" />
+                <button onClick={enter} className="get-player bt1" id="btnBuyTicket">
+                  Mua vé
                   </button>
-                </div>
               </div>
-              <div className="pot">
-                <div className="prize-pool">
+            </div>
+            <div className="pot">
+              <div className="prize-pool">
                 Tổng giải thưởng:
-                <br/>
-                <span style={{ color: 'rgb(64, 101, 224)', fontSize:80}}>{prizePool} tỉ</span>
-                </div>
-                <div className="countdown">
-                <span id="headline">Kết thúc đợt {lotteryId} trong:</span>             
-              <div id="clockdiv"></div>
+                <br />
+                <span style={{ color: 'rgb(64, 101, 224)', fontSize: 80 }}>{prizePool} tỉ</span>
               </div>
+              <div className="countdown">
+                <span id="headline">Kết thúc game trong:</span>
+                <div id="clockdiv"></div>
               </div>
-            
-            <button className="bt2" onClick={pickWinner}>Xổ số</button>
+            </div>
+
             <button className="bt2" onClick={resetLottery}>Reset</button>
 
             {/* </div> */}
           </div>
           <div className="result-lottery">
-            <h2>Kết quả:</h2>
-          <ul id="listWinner">
-            <p>Kết quả đợt {lotteryId}:<br />
-              Số may mắn: {resultLottery}<br />
-              Danh sách chiến thắng: {amountWinner} người</p>
-              
-           </ul>
+            <h2>Kết quả</h2><br />
+            <p>Số may mắn: {resultLottery}<br />
+            Danh sách chiến thắng: {amountWinner} người</p>
+            <ul id="listWinner">
+
+
+            </ul>
           </div>
         </div>
         <div className="participants">

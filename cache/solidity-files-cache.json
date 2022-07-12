@@ -190,8 +190,8 @@
       ]
     },
     "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/Lottery.sol": {
-      "lastModificationDate": 1657519574876,
-      "contentHash": "54bc5629920dd8066ef9c084d6a3a205",
+      "lastModificationDate": 1657611277166,
+      "contentHash": "ebca43361226a4944ff5c32077dec0e4",
       "sourceName": "contracts/Lottery.sol",
       "solcConfig": {
         "version": "0.8.11",
@@ -222,7 +222,8 @@
         "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol",
         "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
         "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
-        "./MyToken.sol"
+        "./MyToken.sol",
+        "./utils/ReentrancyGuardUpgradable.sol"
       ],
       "versionPragmas": [
         "^0.8.11"
@@ -490,42 +491,6 @@
         "SafeMath"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/LotteryUpgradeable.sol": {
-      "lastModificationDate": 1657507958043,
-      "contentHash": "2b6e4e28e72d799bf0451529a42cd142",
-      "sourceName": "contracts/LotteryUpgradeable.sol",
-      "solcConfig": {
-        "version": "0.8.11",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "storageLayout"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.11"
-      ],
-      "artifacts": [
-        "LotteryUpgradeable"
-      ]
-    },
     "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/upgradeERC20Adress.sol": {
       "lastModificationDate": 1657519628425,
       "contentHash": "61d95f3290e95759262bf8137567944f",
@@ -562,6 +527,78 @@
       ],
       "artifacts": [
         "ERC20Upgrade"
+      ]
+    },
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/utils/ReentrancyGuardUpgradable.sol": {
+      "lastModificationDate": 1657526456497,
+      "contentHash": "873b3592b2d706064ec12b148b5ad619",
+      "sourceName": "contracts/utils/ReentrancyGuardUpgradable.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.11"
+      ],
+      "artifacts": [
+        "ReentrancyGuard"
+      ]
+    },
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/LotteryUpgradable.sol": {
+      "lastModificationDate": 1657526502797,
+      "contentHash": "fe39fc2a2e960700044fa719b8efd74f",
+      "sourceName": "contracts/LotteryUpgradable.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.11"
+      ],
+      "artifacts": [
+        "LotteryUpgradable"
       ]
     }
   }
