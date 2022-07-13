@@ -19,7 +19,7 @@ contract LotteryUpgradable{
         require(success, "Delegate call failed");
     }
         function delegateCallCostTicket(uint256 _costTicket) external{
-        (bool success,) = callee.call(abi.encodeWithSignature("setCostTicket(uint256)", _costTicket * (10**18)));
+        (bool success,) = callee.call(abi.encodeWithSignature("setCostTicket(uint256)", _costTicket));
         require(success, "Delegate call failed");
     }
  
