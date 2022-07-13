@@ -78,7 +78,7 @@ function App() {
 
   const declareContract = () => {
     // let lotteryAddress = "0x1d28BfF108F4AcF1c76bFF9777a1350Ed3635F3b"; // Contract Rinkeby
-    let lotteryAddress = "0xdAB6434e5aE2C696Dbdd3Ba06F4C642984C712f5"; // Contract Rinkeby
+    let lotteryAddress = "0x219894F859Cd0a52D10631520f04029D93A9D054"; // Contract Rinkeby
     let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
     setProvider(tmpProvider);
     let tmpSigner = tmpProvider.getSigner();
@@ -135,9 +135,15 @@ function App() {
   console.log("Status Countdown: ", statusCountDown);
   const enter = () => {
     let numTicket = document.getElementById("getNumber").value;
-    if (numTicket == "") numTicket = Math.floor(Math.random() * 10) + 1;
+    if (numTicket == "") numTicket = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
     // const costTicket = ethers.BigNumber.from("5");
+    // if(numTicket == ""){
+    // numTicket = lotteryContract.randomTicket();
+    // lotteryContract.enter(parseInt(Object.values(numTicket)[0], 16));
+    // }
+    // else{
     lotteryContract.enter(numTicket);
+    // }
     document.getElementById("getNumber").value = "";
     if (statusCountDown == 0) {
       setStatusCountDown(1)
@@ -189,7 +195,7 @@ function App() {
   //----------------------------- Reset lottery --------------------------------
 
   const resetLottery = async () => {
-    await lotteryContract._reset();
+    await lotteryContract._reset(amountWinner);
     document.getElementById("btnBuyTicket").disabled = false;
     setStatusCountDown(0);
   }
@@ -221,7 +227,7 @@ function App() {
 
       // Create list winner lottery
       const newLiWinner = document.createElement("li");
-      newLiWinner.className = "li-winner short-text";
+      newLiWinner.className = "li-winner";
       newLiWinner.innerHTML = winner;
 
       document.getElementById("listWinner").appendChild(newLiWinner);
