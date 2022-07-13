@@ -7,7 +7,6 @@ import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "./MyToken.sol";
-import "./utils/ReentrancyGuardUpgradable.sol";
 
     // Rinkeby coordinator: 0x6168499c0cFfCaCD319c818142124B7A15E857ab
 contract Lottery is VRFConsumerBaseV2(0x6168499c0cFfCaCD319c818142124B7A15E857ab) {
@@ -25,7 +24,7 @@ constructor(MyToken _token) public{
     //------------------------------ Declare variable -------------------------------------
 
     // Your subscription ID.
-     uint64 constant s_subscriptionId = 7130;
+     uint64 constant s_subscriptionId = 7370;
 
     // The gas lane to use, which specifies the maximum gas price to bump to.
     bytes32 constant keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
@@ -55,7 +54,7 @@ constructor(MyToken _token) public{
     }
     mapping(uint => Participants) internal allLottery;  
 
-    uint internal playerCount = 0;
+    uint256 internal playerCount = 0;
     uint256 prizePool;
     uint256 public luckyNumber;
     uint256 numTicketPlayer;
@@ -71,8 +70,16 @@ constructor(MyToken _token) public{
         function setCostTicket(uint256 _costTicket) public{
         costTicket = _costTicket * (10**18);
     }
-    //--------------------------------------------------------------------------------------
 
+    uint256 nonce;
+    function randomTicket() public returns (uint) {
+    uint randomnumber = uint(keccak256(abi.encodePacked(block.timestamp, msg.sender, nonce))) % (endAt - startAt + 1);
+    randomnumber = randomnumber + startAt;
+    nonce++;
+    return randomnumber;
+    }
+
+    //--------------------------------------------------------------------------------------
 
     function getBalance() public view returns (uint) {
         return prizePool;
@@ -168,13 +175,14 @@ constructor(MyToken _token) public{
 
     //------------------------------------- Reset lottery ------------------------------------
 
-    function _reset() public{
+    function _reset(uint256 amountWinner) public{
         for(uint256 i = 0;i < playerCount; i++){
             delete allLottery[i];
         }
-        for(uint256 i = 0;i < playerCount; i++){
+        for(uint256 i = 0;i < amountWinner; i++){
             delete groupTicket[i];
         }
+        amountWinner = 0;
         playerCount = 0;
         luckyNumber = 0;
         prizePool = 0;
