@@ -78,7 +78,7 @@ function App() {
 
   const declareContract = () => {
     // let lotteryAddress = "0x1d28BfF108F4AcF1c76bFF9777a1350Ed3635F3b"; // Contract Rinkeby
-    let lotteryAddress = "0x219894F859Cd0a52D10631520f04029D93A9D054"; // Contract Rinkeby
+    let lotteryAddress = "0x5006259D3EF3f8C04Ab371c968BDc9A914A5C8E0"; // Contract Rinkeby
     let tmpProvider = new ethers.providers.Web3Provider(window.ethereum);
     setProvider(tmpProvider);
     let tmpSigner = tmpProvider.getSigner();
@@ -195,7 +195,7 @@ function App() {
   //----------------------------- Reset lottery --------------------------------
 
   const resetLottery = async () => {
-    await lotteryContract._reset(amountWinner);
+    await lotteryContract._reset();
     document.getElementById("btnBuyTicket").disabled = false;
     setStatusCountDown(0);
   }

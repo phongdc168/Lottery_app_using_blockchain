@@ -1,8 +1,8 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/extensions/ERC20.sol": {
-      "lastModificationDate": 1657157287000,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/extensions/ERC20.sol": {
+      "lastModificationDate": 1657143663472,
       "contentHash": "e13ebb9d615726d2ae5c1fe05f0eed4b",
       "sourceName": "contracts/extensions/ERC20.sol",
       "solcConfig": {
@@ -40,8 +40,8 @@
         "ERC20"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/extensions/IERC20.sol": {
-      "lastModificationDate": 1656500882143,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/extensions/IERC20.sol": {
+      "lastModificationDate": 1656507762999,
       "contentHash": "dc713e8031a153652fe119da897164a8",
       "sourceName": "contracts/extensions/IERC20.sol",
       "solcConfig": {
@@ -76,8 +76,8 @@
         "IERC20"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/utils/Context.sol": {
-      "lastModificationDate": 1655351272162,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/utils/Context.sol": {
+      "lastModificationDate": 1655663962612,
       "contentHash": "2d9293f80788081837a528017f3c6bb7",
       "sourceName": "contracts/utils/Context.sol",
       "solcConfig": {
@@ -112,8 +112,8 @@
         "Context"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/MyToken.sol": {
-      "lastModificationDate": 1657244535355,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/MyToken.sol": {
+      "lastModificationDate": 1657519621625,
       "contentHash": "07d794eec4e528917497e3f960ff4d64",
       "sourceName": "contracts/MyToken.sol",
       "solcConfig": {
@@ -151,8 +151,8 @@
         "MyToken"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/upgradeERC20Adress.sol": {
-      "lastModificationDate": 1657676536839,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/upgradeERC20Adress.sol": {
+      "lastModificationDate": 1657519628425,
       "contentHash": "61d95f3290e95759262bf8137567944f",
       "sourceName": "contracts/upgradeERC20Adress.sol",
       "solcConfig": {
@@ -189,8 +189,8 @@
         "ERC20Upgrade"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/utils/Ownable.sol": {
-      "lastModificationDate": 1655351272162,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/utils/Ownable.sol": {
+      "lastModificationDate": 1655663962612,
       "contentHash": "60d1567c96db02b79dc0c5c0eac8c60d",
       "sourceName": "contracts/utils/Ownable.sol",
       "solcConfig": {
@@ -227,9 +227,9 @@
         "Ownable"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/Lottery.sol": {
-      "lastModificationDate": 1657703350358,
-      "contentHash": "a3eb0ae2721cca272464ce22d15f2265",
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/Lottery.sol": {
+      "lastModificationDate": 1657768437347,
+      "contentHash": "4ffab03bb65d272722048d1b61b56c83",
       "sourceName": "contracts/Lottery.sol",
       "solcConfig": {
         "version": "0.8.11",
@@ -269,8 +269,8 @@
         "Lottery"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/node_modules/@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol": {
-      "lastModificationDate": 1656500109012,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/node_modules/@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol": {
+      "lastModificationDate": 1655701057877,
       "contentHash": "56ec852a2aeddf81bf5a5720a7fc6a63",
       "sourceName": "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol",
       "solcConfig": {
@@ -305,8 +305,8 @@
         "VRFCoordinatorV2Interface"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/node_modules/@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol": {
-      "lastModificationDate": 1656500108188,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/node_modules/@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol": {
+      "lastModificationDate": 1655701057665,
       "contentHash": "eb9cc526ef59dfc4d644f56ddca0633a",
       "sourceName": "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol",
       "solcConfig": {
@@ -341,8 +341,8 @@
         "VRFConsumerBaseV2"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/node_modules/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol": {
-      "lastModificationDate": 1656500105696,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/node_modules/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol": {
+      "lastModificationDate": 1655701110585,
       "contentHash": "be27cb63ce8e469db3306a210450385f",
       "sourceName": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
       "solcConfig": {
@@ -379,8 +379,8 @@
         "Initializable"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/node_modules/@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol": {
-      "lastModificationDate": 1656500106440,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/node_modules/@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol": {
+      "lastModificationDate": 1655701110585,
       "contentHash": "11b77de3cb69dfc6b342ec87bd09cbdd",
       "sourceName": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
       "solcConfig": {
@@ -418,44 +418,8 @@
         "OwnableUpgradeable"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/utils/ReentrancyGuardUpgradable.sol": {
-      "lastModificationDate": 1657676536839,
-      "contentHash": "873b3592b2d706064ec12b148b5ad619",
-      "sourceName": "contracts/utils/ReentrancyGuardUpgradable.sol",
-      "solcConfig": {
-        "version": "0.8.11",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "storageLayout"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.11"
-      ],
-      "artifacts": [
-        "ReentrancyGuard"
-      ]
-    },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol": {
-      "lastModificationDate": 1656500093148,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol": {
+      "lastModificationDate": 1655701110525,
       "contentHash": "b70d2e0552ab1f44f7e44b5f8379c358",
       "sourceName": "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol",
       "solcConfig": {
@@ -490,8 +454,8 @@
         "AddressUpgradeable"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol": {
-      "lastModificationDate": 1656500093364,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol": {
+      "lastModificationDate": 1655701110529,
       "contentHash": "6200b84950eb05b4a92a39fd1d6e0f9b",
       "sourceName": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol",
       "solcConfig": {
@@ -528,8 +492,8 @@
         "ContextUpgradeable"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/LotteryUpgradable.sol": {
-      "lastModificationDate": 1657681526421,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/LotteryUpgradable.sol": {
+      "lastModificationDate": 1657704794218,
       "contentHash": "43f33d476ce791f4af076f282e5eb3fe",
       "sourceName": "contracts/LotteryUpgradable.sol",
       "solcConfig": {
@@ -564,8 +528,44 @@
         "LotteryUpgradable"
       ]
     },
-    "/home/lnphong/Documents/blockchain/BAP_training/Lottery_app_using_blockchain/contracts/utils/SafeMath.sol": {
-      "lastModificationDate": 1655351272162,
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/utils/ReentrancyGuardUpgradable.sol": {
+      "lastModificationDate": 1657526456497,
+      "contentHash": "873b3592b2d706064ec12b148b5ad619",
+      "sourceName": "contracts/utils/ReentrancyGuardUpgradable.sol",
+      "solcConfig": {
+        "version": "0.8.11",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.11"
+      ],
+      "artifacts": [
+        "ReentrancyGuard"
+      ]
+    },
+    "/home/lnphong/Documents/blockchain/BAP_Training/Lottery_app_using_blockchain/contracts/utils/SafeMath.sol": {
+      "lastModificationDate": 1655663962612,
       "contentHash": "0b4f4055ff51b7fa266a9a411c20ec94",
       "sourceName": "contracts/utils/SafeMath.sol",
       "solcConfig": {

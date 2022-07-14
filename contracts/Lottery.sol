@@ -24,7 +24,7 @@ constructor(MyToken _token) public{
     //------------------------------ Declare variable -------------------------------------
 
     // Your subscription ID.
-     uint64 constant s_subscriptionId = 7370;
+     uint64 constant s_subscriptionId = 7130;
 
     // The gas lane to use, which specifies the maximum gas price to bump to.
     bytes32 constant keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
@@ -175,14 +175,13 @@ constructor(MyToken _token) public{
 
     //------------------------------------- Reset lottery ------------------------------------
 
-    function _reset(uint256 amountWinner) public{
+    function _reset() public{
         for(uint256 i = 0;i < playerCount; i++){
             delete allLottery[i];
         }
-        for(uint256 i = 0;i < amountWinner; i++){
+        for(uint256 i = 0;i < (endAt + 1); i++){
             delete groupTicket[i];
         }
-        amountWinner = 0;
         playerCount = 0;
         luckyNumber = 0;
         prizePool = 0;
